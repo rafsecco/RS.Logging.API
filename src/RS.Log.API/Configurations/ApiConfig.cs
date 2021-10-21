@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RS.Log.API.Data;
@@ -13,9 +14,9 @@ namespace RS.Log.API.Configurations
 {
 	public static class ApiConfig
 	{
-		public static IServiceCollection AddApiConfigureServices(this IServiceCollection services)
+		public static IServiceCollection AddApiConfigureServices(this IServiceCollection services, IConfiguration configuration)
 		{
-			var strConn = "Server = localhost; Port = 3306; Database = RS.Log; Uid = root; Pwd = MyDB@123;";
+			var strConn = configuration.GetConnectionString("MariaDBConn");
 			services.AddDbContext<ApplicationContext>(p => p
 				.UseMySql(strConn, ServerVersion.AutoDetect(strConn))
 				.LogTo(Console.WriteLine)
