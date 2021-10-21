@@ -29,7 +29,6 @@ C:\@BackUp\@Programacao\PROJETOS\RS.Log.Solution\src\RS.Log.API\obj\Debug\net5.0
 C:\@BackUp\@Programacao\PROJETOS\RS.Log.Solution\src\RS.Log.API\obj\Debug\net5.0\staticwebassets\RS.Log.API.StaticWebAssets.xml
 C:\@BackUp\@Programacao\PROJETOS\RS.Log.Solution\src\RS.Log.API\obj\Debug\net5.0\scopedcss\bundle\RS.Log.API.styles.css
 C:\@BackUp\@Programacao\PROJETOS\RS.Log.Solution\src\RS.Log.API\obj\Debug\net5.0\RS.Log.API.RazorTargetAssemblyInfo.cache
-C:\@BackUp\@Programacao\PROJETOS\RS.Log.Solution\src\RS.Log.API\obj\Debug\net5.0\RS.Log.API.csproj.CopyComplete
 C:\@BackUp\@Programacao\PROJETOS\RS.Log.Solution\src\RS.Log.API\obj\Debug\net5.0\RS.Log.API.dll
 C:\@BackUp\@Programacao\PROJETOS\RS.Log.Solution\src\RS.Log.API\obj\Debug\net5.0\ref\RS.Log.API.dll
 C:\@BackUp\@Programacao\PROJETOS\RS.Log.Solution\src\RS.Log.API\obj\Debug\net5.0\RS.Log.API.pdb
