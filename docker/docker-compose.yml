@@ -1,0 +1,18 @@
+version: '3.1'
+
+services:
+
+    db:
+        image: mariadb
+        container_name: MariaDb
+        restart: always
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_ROOT_PASSWORD: MyDB@123
+
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8080:8080
