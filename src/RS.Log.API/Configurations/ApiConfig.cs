@@ -5,10 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RS.Log.API.Data;
+using RS.Log.API.Middlewares;
+using RS.Log.API.Provider;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RS.Log.API.Configurations
 {
@@ -16,14 +15,16 @@ namespace RS.Log.API.Configurations
 	{
 		public static IServiceCollection AddApiConfigureServices(this IServiceCollection services, IConfiguration configuration)
 		{
+			services.AddScoped<TenantData>();
+
+			services.AddControllers();
+
 			var strConn = configuration.GetConnectionString("MariaDBConn");
 			services.AddDbContext<ApplicationContext>(p => p
 				.UseMySql(strConn, ServerVersion.AutoDetect(strConn))
 				.LogTo(Console.WriteLine)
 				.EnableSensitiveDataLogging()
 			);
-
-			services.AddControllers();
 
 			return services;
 		}
@@ -37,13 +38,13 @@ namespace RS.Log.API.Configurations
 				app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RS.Log.API v1"));
 			}
 
-			DatabaseInitialize(app);
-
 			app.UseHttpsRedirection();
 
 			app.UseRouting();
 
 			app.UseAuthorization();
+
+			app.UseMiddleware<TenantMiddleware>();
 
 			app.UseEndpoints(endpoints =>
 			{
@@ -51,29 +52,6 @@ namespace RS.Log.API.Configurations
 			});
 
 			return app;
-		}
-
-		private static void DatabaseInitialize(IApplicationBuilder app)
-		{
-			using var db = app.ApplicationServices
-				.CreateScope()
-				.ServiceProvider
-				.GetRequiredService<ApplicationContext>();
-
-			db.Database.EnsureDeleted();
-			db.Database.EnsureCreated();
-
-			for (var i = 1; i <= 5; i++)
-			{
-				db.Logs.Add(new Domain.Log
-				{
-					Project = $"Projetct {i}",
-					Message = $"Message {i}",
-					StackTrace = $"StackTrace {i}"
-				});
-			}
-
-			db.SaveChanges();
 		}
 	}
 }

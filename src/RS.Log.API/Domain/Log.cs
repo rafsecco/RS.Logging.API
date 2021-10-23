@@ -1,16 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RS.Log.API.Domain
 {
 	public class Log
 	{
+		[Key]
+		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int Id { get; set; }
-		public string Project { get; set; }
-		public string Message { get; set; }
-		public string StackTrace { get; set; }
+		
+		[Required]
+		[Column(TypeName = "VARCHAR(100)")]
+		[MaxLength(100)]
+		public string TenantId { get; set; }
+		
 		public DateTime DateCreated { get; set; } = DateTime.Now;
+
+		[Column(TypeName = "VARCHAR(255)")]
+		public string Message { get; set; }
+		
+		public string StackTrace { get; set; }
 	}
 }

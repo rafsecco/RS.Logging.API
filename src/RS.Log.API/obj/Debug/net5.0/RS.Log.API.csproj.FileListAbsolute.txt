@@ -33,4 +33,6 @@ C:\@BackUp\@Programacao\PROJETOS\RS.Log.Solution\src\RS.Log.API\obj\Debug\net5.0
 C:\@BackUp\@Programacao\PROJETOS\RS.Log.Solution\src\RS.Log.API\obj\Debug\net5.0\RS.Log.API.pdb
 C:\@BackUp\@Programacao\PROJETOS\RS.Log.Solution\src\RS.Log.API\obj\Debug\net5.0\RS.Log.API.genruntimeconfig.cache
 C:\@BackUp\@Programacao\PROJETOS\RS.Log.Solution\src\RS.Log.API\bin\Debug\net5.0\appsettings.Production.json
-C:\@BackUp\@Programacao\PROJETOS\RS.Log.Solution\src\RS.Log.API\obj\Debug\net5.0\RS.Log.API.csproj.CopyComplete
+C:\@BackUp\@Programacao\PROJETOS\RS.Log.Solution\src\RS.Log.API\bin\Debug\net5.0\Humanizer.dll
+C:\@BackUp\@Programacao\PROJETOS\RS.Log.Solution\src\RS.Log.API\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\@BackUp\@Programacao\PROJETOS\RS.Log.Solution\src\RS.Log.API\obj\Debug\net5.0\RS.Log.API.csproj.AssemblyReference.cache
