@@ -9,7 +9,7 @@
   },
   "$schema": "http://json.schemastore.org/launchsettings.json",
   "profiles": {
-    "IIS Express": {
+    "IIS Express - Dev": {
       "commandName": "IISExpress",
       "launchBrowser": true,
       "launchUrl": "swagger",
@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "RS.Log.API": {
+    "RS.Log.API - Dev": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
