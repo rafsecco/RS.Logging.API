@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System;
+using RS.Log.API.ViewModels;
 
 namespace RS.Log.API.Controllers
 {
@@ -23,6 +24,17 @@ namespace RS.Log.API.Controllers
 		public IEnumerable<Domain.Log> Get([FromServices] ApplicationContext db)
 		{
 			var logs = db.Logs.ToArray();
+			return logs;
+		}
+
+		[HttpGet]
+		[Route("Find")]
+		public IEnumerable<Domain.Log> GetRange([FromServices] ApplicationContext db, [FromQuery] LogViewModel model)
+		{
+			var logs = db.Logs.Where(filtro => 
+					model.DateTimeIni <= filtro.DateCreated && filtro.DateCreated <= model.DateTimeEnd
+					&& filtro.Message.Contains(model.Message ?? string.Empty)
+				).ToArray();
 			return logs;
 		}
 
