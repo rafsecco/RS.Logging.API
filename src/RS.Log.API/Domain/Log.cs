@@ -2,8 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RS.Log.API.Domain
+namespace RS.Log.Domain
 {
+	[Table("Logs")]
 	public class Log
 	{
 		[Key]
@@ -11,16 +12,13 @@ namespace RS.Log.API.Domain
 		public int Id { get; private set; }
 
 		[Required]
-		[Column(TypeName = "VARCHAR(100)")]
-		[MaxLength(100)]
-		public string TenantId { get; set; }
-
 		public DateTime DateCreated { get; private set; } = DateTime.Now;
 
+		[Required]
 		[Column(TypeName = "VARCHAR(255)")]
 		public string Message { get; set; }
 
+		[Column(TypeName = "VARCHAR(255)")]
 		public string StackTrace { get; set; }
-
 	}
 }

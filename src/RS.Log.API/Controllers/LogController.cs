@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using RS.Log.API.Data;
+using RS.Log.API.Database;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,37 +21,22 @@ namespace RS.Log.API.Controllers
 		}
 
 		[HttpGet]
-		public IEnumerable<Domain.Log> Get([FromServices] ApplicationContext db)
+		[Route("Search")]
+		public IEnumerable<Domain.Log> GetRange([FromServices] LogsContext db, [FromQuery] LogViewModel model)
 		{
-			var logs = db.Logs.ToArray();
-			return logs;
-		}
+			var logs = db.Logs.Where(f => (
+				(model.DateTimeIni == null || f.DateCreated >= model.DateTimeIni.Value)
+					&& (model.DateTimeEnd == null || f.DateCreated <= model.DateTimeEnd.Value)
+				) && f.Message.Contains(model.Message ?? string.Empty)
+			).ToArray();
 
-		[HttpGet]
-		[Route("Find")]
-		public IEnumerable<Domain.Log> GetRange([FromServices] ApplicationContext db, [FromQuery] LogViewModel model)
-		{
-			var logs = db.Logs.Where(filtro => 
-					model.DateTimeIni <= filtro.DateCreated && filtro.DateCreated <= model.DateTimeEnd
-					&& filtro.Message.Contains(model.Message ?? string.Empty)
-				).ToArray();
 			return logs;
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> PostAsync(
-			[FromBody] Domain.Log model,
-			[FromServices] ApplicationContext db)
+		public async Task<IActionResult> PostAsync([FromServices] LogsContext db, [FromBody] Domain.Log model)
 		{
-			if (!ModelState.IsValid)
-			{
-				return BadRequest();
-			}
-
-			var objLog = new Domain.Log();
-			objLog.Message = model.Message;
-			objLog.StackTrace = model.StackTrace;
-			objLog.TenantId = model.TenantId;
+			Domain.Log objLog = new() { Message = model.Message, StackTrace = model.StackTrace };
 
 			try
 			{
