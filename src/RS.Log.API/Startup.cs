@@ -1,19 +1,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
 using RS.Log.API.Configurations;
-using RS.Log.API.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using RS.Log.API.Database;
 
 namespace RS.Log.API
 {
@@ -26,18 +16,32 @@ namespace RS.Log.API
 
 		public IConfiguration Configuration { get; }
 
-		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddApiConfigureServices(Configuration);
 			services.AddSwaggerConfigureServices();
 		}
 
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
 			app.UseApiConfigure(env);
 			app.UseSwaggerConfigure(env);
+
+			//DatabaseInitialize(app);
 		}
+
+		private void DatabaseInitialize(IApplicationBuilder app)
+		{
+			using var db = app.ApplicationServices
+				.CreateScope()
+				.ServiceProvider
+				.GetRequiredService<LogsContext>();
+
+			db.Database.EnsureDeleted();
+			db.Database.EnsureCreated();
+
+			db.SaveChanges();
+		}
+
 	}
 }

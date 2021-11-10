@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using RS.Log.API.Data;
-using RS.Log.API.Middlewares;
+using RS.Log.API.Database;
+using RS.Log.API.Extensions;
 using RS.Log.API.Provider;
 using System;
 
@@ -19,12 +20,28 @@ namespace RS.Log.API.Configurations
 
 			services.AddControllers();
 
-			var strConn = configuration.GetConnectionString("MariaDBConn");
-			services.AddDbContext<ApplicationContext>(p => p
-				.UseMySql(strConn, ServerVersion.AutoDetect(strConn))
-				.LogTo(Console.WriteLine)
-				.EnableSensitiveDataLogging()
-			);
+			services.AddHttpContextAccessor();
+			services.AddScoped<LogsContext>(provider =>
+			{
+				var httpContext = provider.GetService<IHttpContextAccessor>()?.HttpContext;
+				var tenantId = httpContext?.GetTenantId();
+				var strConn = configuration.GetConnectionString($"Conn{tenantId??"MariaDB"}");
+
+				var optionsBuilder = new DbContextOptionsBuilder<LogsContext>();
+				optionsBuilder
+					.UseMySql(strConn, ServerVersion.AutoDetect(strConn), p =>
+					{
+						p.EnableRetryOnFailure(
+							maxRetryCount: 3,
+							maxRetryDelay: TimeSpan.FromSeconds(5),
+							errorNumbersToAdd: null);
+					})
+					.LogTo(Console.WriteLine)
+					.EnableSensitiveDataLogging()
+					.EnableDetailedErrors();
+				
+				return new LogsContext(optionsBuilder.Options);
+			});
 
 			return services;
 		}
@@ -44,8 +61,6 @@ namespace RS.Log.API.Configurations
 
 			app.UseAuthorization();
 
-			app.UseMiddleware<TenantMiddleware>();
-
 			app.UseEndpoints(endpoints =>
 			{
 				endpoints.MapControllers();
@@ -54,4 +69,5 @@ namespace RS.Log.API.Configurations
 			return app;
 		}
 	}
+
 }
