@@ -2,17 +2,23 @@ version: '3.1'
 
 services:
 
-    db:
-        image: mariadb
-        container_name: MariaDb
+    database:
+        image: mariadb:latest
+        container_name: MariaDb_RS_Log
         restart: always
+        build:
+            context: ../sql
+            dockerfile: ./Dockerfile
         ports:
             - 3306:3306
         environment:
             MYSQL_ROOT_PASSWORD: MyDB@123
 
-    adminer:
-        image: adminer
-        restart: always
-        ports:
-            - 8080:8080
+    #api-Log:
+    #    image: 
+
+    # adminer:
+    #     image: adminer
+    #     restart: always
+    #     ports:
+    #         - 8080:8080
