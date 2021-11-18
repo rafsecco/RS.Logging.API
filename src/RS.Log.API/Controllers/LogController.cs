@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System;
 using RS.Log.API.ViewModels;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace RS.Log.API.Controllers
 {
@@ -14,23 +16,43 @@ namespace RS.Log.API.Controllers
 	public class LogController : ControllerBase
 	{
 		private readonly ILogger<LogController> _logger;
+		private readonly IConfiguration _config;
 
-		public LogController(ILogger<LogController> logger)
+		public LogController(ILogger<LogController> logger, IConfiguration config)
 		{
 			_logger = logger;
+			_config = config;
 		}
 
 		[HttpGet]
 		[Route("Search")]
-		public IEnumerable<Domain.Log> GetRange([FromServices] LogsContext db, [FromQuery] LogViewModel model)
+		public async Task<IActionResult> GetRange([FromServices] LogsContext db, [FromQuery] LogViewModel model)
 		{
-			var logs = db.Logs.Where(f => (
-				(model.DateTimeIni == null || f.DateCreated >= model.DateTimeIni.Value)
-					&& (model.DateTimeEnd == null || f.DateCreated <= model.DateTimeEnd.Value)
-				) && f.Message.Contains(model.Message ?? string.Empty)
-			).ToArray();
+			var objReturn = new PagedResult<Domain.Log>();
+			objReturn.PageIndex = model.PageIndex ?? 1;
+			objReturn.PageSize = model.PageSize ?? _config.GetValue<int>("AppSettings:PageSize");
+			
+			var query = db.Logs.AsNoTracking().AsQueryable();
 
-			return logs;
+			#region Search
+			if (!string.IsNullOrEmpty(model.Message?.Trim()))
+				query = query.Where(w => w.Message.Contains(model.Message));
+
+			if (model.DateTimeIni.HasValue)
+				query = query.Where(w => w.DateCreated >= model.DateTimeIni && w.DateCreated <= model.DateTimeEnd);
+			#endregion
+
+			objReturn.TotalResults = await query.CountAsync();
+
+			// Paging
+			query = query
+				.Skip(objReturn.PageSize * (objReturn.PageIndex - 1))
+				.Take(objReturn.PageSize)
+				.OrderBy(x => x.DateCreated);
+
+			objReturn.List = await query.ToListAsync();
+
+			return Ok(objReturn);
 		}
 
 		[HttpPost]
