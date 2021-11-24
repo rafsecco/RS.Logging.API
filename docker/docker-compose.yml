@@ -2,23 +2,34 @@ version: '3.1'
 
 services:
 
-    database:
+    maria-db:
         image: mariadb:latest
-        container_name: MariaDb_RS_Log
+        container_name: RS_Log_MariaDb
         restart: always
         build:
             context: ../sql
             dockerfile: ./Dockerfile
         ports:
             - 3306:3306
+        #expose:
+        #    - 3306
         environment:
             MYSQL_ROOT_PASSWORD: MyDB@123
 
-    #api-Log:
-    #    image: 
+    api-log:
+        image: rs_log_api:latest
+        container_name: RS_Log_API
+        restart: always
+        build:
+            context: ../src
+            dockerfile: ./RS.Log.API/Dockerfile
+        ports:
+            - 5000:80
+            #- 443:443
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=http://+5000
+            #- ASPNETCORE_URLS=https://+:5001;http://+5000
+        depends_on:
+            - maria-db
 
-    # adminer:
-    #     image: adminer
-    #     restart: always
-    #     ports:
-    #         - 8080:8080
