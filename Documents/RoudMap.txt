@@ -1,0 +1,22 @@
+Desenvolver uma API para registrar os logs de varios projetos
+
+-Ações
+	-GravarLog()
+		Salvar o Log
+	-PesquisarLog()
+		Pesquisa com paginação
+
+-Database
+	-Tabela logs
+		-Id 			BigInt
+		-IdProcess		BigInt
+		-DateCreated	DateTime
+		-LogLevel		int16
+		-Message		string[255]
+		-StackTrace		string[max]
+
+-Adicionar os testes
+
+-Aplicar o Tenant (Separar os Databases por projeto)
+
+

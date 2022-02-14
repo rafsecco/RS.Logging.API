@@ -1,4 +1,4 @@
-# RS.Log.API
+# RS.Logging
 Uma API para fazer o log dos seus projetos
 
 ## Descrição e configuração do docker para testar o projeto
@@ -10,10 +10,10 @@ docker-compose -p rs_log_solution build
 docker-compose -p rs_log_solution up -d
 ```
 
-Para testar digite o endereço abaixo no seu browser ou importe a collection do postman disponibilizada
-http://localhost:5000/swagger/
+Para testar importe a collection do postman disponibilizada
 
 ## Futuras implementações
-[] Criar o projeto de testes
-[] Refatorar
-[] Segurança
+- [ ] Criar o projeto de testes
+- [ ] Refatorar
+- [ ] Segurança
+- [ ] Multi-Tenant

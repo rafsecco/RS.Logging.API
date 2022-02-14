@@ -16,10 +16,3 @@ RUN ["/usr/local/bin/docker-entrypoint.sh", "mysqld", "--datadir", "/initialized
 FROM mariadb:latest
 COPY --from=builder /initialized-db /var/lib/mysql
 EXPOSE 3306
-
-
-#docker build --tag my-prepopulated-image .
-#docker run -d --rm --name my-container my-prepopulated-image
-#docker logs my-container
-
-#docker run -it --rm --link my-container mariadb:latest mysql -hmy-container -uroot -proot myexample -e "select * from mytable;"
