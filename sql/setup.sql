@@ -1,4 +1,4 @@
-CREATE DATABASE `RS.Log.ProjectA`;
+﻿CREATE DATABASE `RS.Log.ProjectA`;
 
 --To create a new user for DataBase RS.Log.ProjectA
 CREATE USER 'ProjectA'@localhost IDENTIFIED BY 'ProjectA@123';
@@ -18,73 +18,88 @@ CREATE TABLE IF NOT EXISTS `__EFMigrationsHistory` (
     `MigrationId` varchar(150) CHARACTER SET utf8mb4 NOT NULL,
     `ProductVersion` varchar(32) CHARACTER SET utf8mb4 NOT NULL,
     CONSTRAINT `PK___EFMigrationsHistory` PRIMARY KEY (`MigrationId`)
-) CHARACTER SET utf8mb4;
+) CHARACTER SET=utf8mb4;
 
 START TRANSACTION;
 
-CREATE TABLE `Logs` (
-    `Id` int NOT NULL AUTO_INCREMENT,
-    `DateCreated` datetime(6) NOT NULL,
-    `Message` VARCHAR(255) COLLATE utf8_general_ci NOT NULL,
-    `StackTrace` VARCHAR(255) COLLATE utf8_general_ci NULL,
-    CONSTRAINT `PK_Logs` PRIMARY KEY (`Id`)
-) COLLATE utf8_general_ci;
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20220214134700_InitialCreate') THEN
 
-CREATE INDEX `idx_Logs_DateCreated` ON `Logs` (`DateCreated`);
+    CREATE TABLE `Logs` (
+        `Id` bigint unsigned NOT NULL AUTO_INCREMENT,
+        `IdProcess` bigint unsigned NOT NULL,
+        `LogLevel` SMALLINT NOT NULL,
+        `Message` VARCHAR(255) COLLATE utf8_general_ci NOT NULL,
+        `Info` longtext COLLATE utf8_general_ci NOT NULL,
+        `DateCreated` datetime(6) NOT NULL DEFAULT NOW(),
+        CONSTRAINT `PK_Logs` PRIMARY KEY (`Id`, `IdProcess`)
+    ) COLLATE=utf8_general_ci;
 
-CREATE INDEX `idx_Logs_DateCreated-Message` ON `Logs` (`DateCreated`, `Message`);
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
 
-INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-VALUES ('20211109175814_CreateDB', '5.0.11');
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20220214134700_InitialCreate') THEN
 
-INSERT INTO Logs (Id, DateCreated, Message, StackTrace) VALUES (null, '2021-11-01 08:15:00', 'Teste 1', 'Teste 1');
-INSERT INTO Logs (Id, DateCreated, Message, StackTrace) VALUES (null, '2021-11-01 08:30:00', 'Teste 2', 'Teste 2');
-INSERT INTO Logs (Id, DateCreated, Message, StackTrace) VALUES (null, '2021-11-01 08:50:00', 'Teste 3', 'Teste 3');
-INSERT INTO Logs (Id, DateCreated, Message, StackTrace) VALUES (null, '2021-11-01 13:00:00', 'Teste 4', 'Teste 4');
-INSERT INTO Logs (Id, DateCreated, Message, StackTrace) VALUES (null, '2021-11-02 08:00:00', 'Teste 5', 'Teste 5');
-INSERT INTO Logs (Id, DateCreated, Message, StackTrace) VALUES (null, '2021-11-02 08:15:00', 'Teste 6', 'Teste 6');
+    CREATE INDEX `idx_Logs_DateCreated` ON `Logs` (`DateCreated`);
 
-COMMIT;
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
 
-CREATE DATABASE `RS.Log.ProjectB`;
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20220214134700_InitialCreate') THEN
 
-CREATE USER 'ProjectB'@localhost IDENTIFIED BY 'ProjectB@123';
-GRANT USAGE ON *.* TO 'ProjectB'@'%' IDENTIFIED BY 'ProjectB@123';
-GRANT ALL privileges ON `RS.Log.ProjectB`.* TO 'ProjectB'@'%';
-FLUSH PRIVILEGES;
+    CREATE INDEX `idx_Logs_DateCreated-IdProcess` ON `Logs` (`DateCreated`, `IdProcess`);
 
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
 
-USE `RS.Log.ProjectB`;
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20220214134700_InitialCreate') THEN
 
-CREATE TABLE IF NOT EXISTS `__EFMigrationsHistory` (
-    `MigrationId` varchar(150) CHARACTER SET utf8mb4 NOT NULL,
-    `ProductVersion` varchar(32) CHARACTER SET utf8mb4 NOT NULL,
-    CONSTRAINT `PK___EFMigrationsHistory` PRIMARY KEY (`MigrationId`)
-) CHARACTER SET utf8mb4;
+    CREATE INDEX `idx_Logs_DateCreated-LogLevel` ON `Logs` (`DateCreated`, `LogLevel`);
 
-START TRANSACTION;
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
 
-CREATE TABLE `Logs` (
-    `Id` int NOT NULL AUTO_INCREMENT,
-    `DateCreated` datetime(6) NOT NULL,
-    `Message` VARCHAR(255) COLLATE utf8_general_ci NOT NULL,
-    `StackTrace` VARCHAR(255) COLLATE utf8_general_ci NULL,
-    CONSTRAINT `PK_Logs` PRIMARY KEY (`Id`)
-) COLLATE utf8_general_ci;
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20220214134700_InitialCreate') THEN
 
-CREATE INDEX `idx_Logs_DateCreated` ON `Logs` (`DateCreated`);
+    INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
+    VALUES ('20220214134700_InitialCreate', '6.0.1');
 
-CREATE INDEX `idx_Logs_DateCreated-Message` ON `Logs` (`DateCreated`, `Message`);
-
-INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-VALUES ('20211109175814_CreateDB', '5.0.11');
-
-INSERT INTO Logs (Id, DateCreated, Message, StackTrace) VALUES (null, '2021-11-10 08:15:00', 'Teste 7', 'Teste 7');
-INSERT INTO Logs (Id, DateCreated, Message, StackTrace) VALUES (null, '2021-11-10 08:30:00', 'Teste 8', 'Teste 8');
-INSERT INTO Logs (Id, DateCreated, Message, StackTrace) VALUES (null, '2021-11-10 08:50:00', 'Teste 9', 'Teste 9');
-INSERT INTO Logs (Id, DateCreated, Message, StackTrace) VALUES (null, '2021-11-10 13:00:00', 'Teste 10', 'Teste 10');
-INSERT INTO Logs (Id, DateCreated, Message, StackTrace) VALUES (null, '2021-11-12 08:00:00', 'Teste 11', 'Teste 11');
-INSERT INTO Logs (Id, DateCreated, Message, StackTrace) VALUES (null, '2021-11-12 08:15:00', 'Teste 12', 'Teste 12');
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
 
 COMMIT;
 

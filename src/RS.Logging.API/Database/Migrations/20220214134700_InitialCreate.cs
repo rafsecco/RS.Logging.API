@@ -2,9 +2,11 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace RS.Log.API.Database.Migrations
+#nullable disable
+
+namespace RS.Logging.API.Database.Migrations
 {
-    public partial class CreateDB : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,15 +14,17 @@ namespace RS.Log.API.Database.Migrations
                 name: "Logs",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    DateCreated = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    IdProcess = table.Column<ulong>(type: "bigint unsigned", nullable: false),
+                    LogLevel = table.Column<short>(type: "SMALLINT", nullable: false),
                     Message = table.Column<string>(type: "VARCHAR(255)", nullable: false, collation: "utf8_general_ci"),
-                    StackTrace = table.Column<string>(type: "VARCHAR(255)", nullable: true, collation: "utf8_general_ci")
+                    Info = table.Column<string>(type: "longtext", nullable: false, collation: "utf8_general_ci"),
+                    DateCreated = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "NOW()")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Logs", x => x.Id);
+                    table.PrimaryKey("PK_Logs", x => new { x.Id, x.IdProcess });
                 })
                 .Annotation("Relational:Collation", "utf8_general_ci");
 
@@ -30,9 +34,14 @@ namespace RS.Log.API.Database.Migrations
                 column: "DateCreated");
 
             migrationBuilder.CreateIndex(
-                name: "idx_Logs_DateCreated-Message",
+                name: "idx_Logs_DateCreated-IdProcess",
                 table: "Logs",
-                columns: new[] { "DateCreated", "Message" });
+                columns: new[] { "DateCreated", "IdProcess" });
+
+            migrationBuilder.CreateIndex(
+                name: "idx_Logs_DateCreated-LogLevel",
+                table: "Logs",
+                columns: new[] { "DateCreated", "LogLevel" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
