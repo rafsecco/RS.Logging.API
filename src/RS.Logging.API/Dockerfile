@@ -8,6 +8,7 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["./RS.Logging.API/RS.Logging.API.csproj", "src/RS.Logging.API/"]
 COPY ["./RS.Core/RS.Core.csproj", "src/RS.Core/"]
+COPY ["./RS.Logging.Domain/RS.Logging.Domain.csproj", "src/RS.Logging.Domain/"]
 RUN dotnet restore "src/RS.Logging.API/RS.Logging.API.csproj"
 COPY . .
 WORKDIR "/src/RS.Logging.API"

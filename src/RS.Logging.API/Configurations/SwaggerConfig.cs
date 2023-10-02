@@ -1,4 +1,4 @@
-﻿using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi.Models;
 
 namespace RS.Logging.API.Configurations;
 
@@ -9,7 +9,7 @@ public static class SwaggerConfig
 		services.AddEndpointsApiExplorer();
 		services.AddSwaggerGen(c =>
 		{
-			c.SwaggerDoc("v1", new OpenApiInfo { Title = "RS.LogService.API", Version = "v1" });
+			c.SwaggerDoc("v1", new OpenApiInfo { Title = "RS.Logging.API", Version = "v1" });
 		});
 		return services;
 	}
@@ -19,7 +19,7 @@ public static class SwaggerConfig
 		if (app.Environment.IsDevelopment())
 		{
 			app.UseSwagger();
-			app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RS.LogService.API v1"));
+			app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RS.Logging.API v1"));
 		}
 		return app;
 	}
