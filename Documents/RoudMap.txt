@@ -7,13 +7,25 @@ Desenvolver uma API para registrar os logs de varios projetos
 		Pesquisa com paginação
 
 -Database
-	-Tabela logs
-		-Id 			BigInt
-		-IdProcess		BigInt
-		-DateCreated	DateTime
-		-LogLevel		int16
-		-Message		string[255]
-		-StackTrace		string[max]
+	-TB_Log
+		-id_Log			BigInt	PK
+		-ie_LogLevel	Int
+		-dt_CreatedAt	DateTime
+		-ds_Message		String[255]
+		-ds_StackTrace	String[max]
+
+	-TB_LogProcess
+		-id_LogProcess	BigInt	PK
+		-cd_Process		Int
+		-dt_CreatedAt	DateTime
+
+	-TB_LogProcessDetail
+		-id_LogProcessDetail	BigInt	PK
+		-cd_LogProcess			Int 	FK 	IDX
+		-ie_LogLevel			Int
+		-dt_CreatedAt			DateTime 	IDX
+		-ds_Message				String[255]
+		-ds_StackTrace			String[max]
 
 -Adicionar os testes
 
