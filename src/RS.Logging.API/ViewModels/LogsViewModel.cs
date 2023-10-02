@@ -1,15 +1,20 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace RS.Logging.API.ViewModels;
 
 public class LogsViewModel
 {
-	[Required]
-	public ulong IdProcess { get; set; }
+	public LogsViewModel(LogLevel logLevel, string message, string? stackTrace)
+	{
+		LogLevel = logLevel;
+		Message = message;
+		StackTrace = stackTrace;
+	}
+
 	[Required]
 	public LogLevel LogLevel { get; set; }
+	//[Required(ErrorMessage = "O campo {0} é obrigatório")]
 	[Required]
 	public string Message { get; set; }
-	public string Info { get; set; }
-	public DateTime DateCreated { get; set; } = DateTime.Now;
+	public string? StackTrace { get; set; }
 }
