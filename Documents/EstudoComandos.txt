@@ -1,11 +1,5 @@
-EntityFrameWork
-dotnet ef migrations add InitialCreate -o .\Database\Migrations
-dotnet ef database update
-dotnet ef migrations script --idempotent --output "../../sql/setup1.sql" --context LogsDbContext
+##########	Docker	################################################################################################################
 
-dotnet ef database remove
-
-Docker
 docker-compose -p rs_log_solution build
 docker-compose -p rs_log_solution up -d
 docker-compose -p rs_log_solution down
@@ -16,3 +10,21 @@ docker-compose -p rs_log_solution down
 #docker logs my-container
 
 #docker run -it --rm --link my-container mariadb:latest mysql -hmy-container -uroot -proot myexample -e "select * from mytable;"
+
+
+##########	Migrações	################################################################################################################
+
+Ir para a pasta do projeto de Infra
+	dotnet ef migrations add InitialCreate --startup-project ..\RS.Logging.API\
+	dotnet ef database update --startup-project ..\RS.Logging.API\
+
+	dotnet ef migrations remove --startup-project ..\RS.Logging.API\
+
+
+
+EntityFrameWork
+dotnet ef migrations add InitialCreate --startup-project ..\RS.Logging.API\ -o .\Database\Migrations
+dotnet ef database update
+dotnet ef migrations script --idempotent --output "../../sql/setup1.sql" --context LogsDbContext
+
+dotnet ef database remove

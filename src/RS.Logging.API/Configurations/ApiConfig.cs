@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
-using RS.Logging.API.Database;
-using RS.Logging.API.Domain;
+using RS.Logging.Infra.Contexts;
 
 namespace RS.Logging.API.Configurations;
 
@@ -11,16 +9,16 @@ public static class ApiConfig
 	{
 		services.AddControllers();
 
-		string strConn = configuration.GetConnectionString("ConnMariaDB");
+		string? strConn = configuration.GetConnectionString("ConnMariaDB");
 
-		services.AddDbContext<LogsDbContext>
+		services.AddDbContext<RSLoggingDbContext>
 		(
 			options => options
 				.UseMySql(strConn, ServerVersion.AutoDetect(strConn), e =>
 				{
 					e.EnableRetryOnFailure(
 						maxRetryCount: 3,
-						maxRetryDelay: TimeSpan.FromSeconds(5),
+						maxRetryDelay: TimeSpan.FromSeconds(6),
 						errorNumbersToAdd: null);
 				})
 				.LogTo(Console.WriteLine)

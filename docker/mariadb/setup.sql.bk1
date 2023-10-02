@@ -1,0 +1,29 @@
+﻿CREATE TABLE IF NOT EXISTS `__EFMigrationsHistory` (
+    `MigrationId` varchar(150) CHARACTER SET utf8mb4 NOT NULL,
+    `ProductVersion` varchar(32) CHARACTER SET utf8mb4 NOT NULL,
+    CONSTRAINT `PK___EFMigrationsHistory` PRIMARY KEY (`MigrationId`)
+) CHARACTER SET=utf8mb4;
+
+START TRANSACTION;
+
+CREATE TABLE `Logs` (
+    `Id` bigint unsigned NOT NULL AUTO_INCREMENT,
+    `IdProcess` bigint unsigned NOT NULL,
+    `LogLevel` SMALLINT NOT NULL,
+    `Message` VARCHAR(255) COLLATE utf8_general_ci NOT NULL,
+    `Info` longtext COLLATE utf8_general_ci NOT NULL,
+    `DateCreated` datetime(6) NOT NULL DEFAULT NOW(),
+    CONSTRAINT `PK_Logs` PRIMARY KEY (`Id`, `IdProcess`)
+) COLLATE=utf8_general_ci;
+
+CREATE INDEX `idx_Logs_DateCreated` ON `Logs` (`DateCreated`);
+
+CREATE INDEX `idx_Logs_DateCreated-IdProcess` ON `Logs` (`DateCreated`, `IdProcess`);
+
+CREATE INDEX `idx_Logs_DateCreated-LogLevel` ON `Logs` (`DateCreated`, `LogLevel`);
+
+INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
+VALUES ('20230827144825_InitialCreation', '7.0.10');
+
+COMMIT;
+
