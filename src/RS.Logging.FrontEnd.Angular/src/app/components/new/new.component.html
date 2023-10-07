@@ -1,0 +1,17 @@
+<form [formGroup]="formGroup" (submit)="submit()">
+	<h1>New log</h1>
+
+	<div class="formControl">
+		<input type="text" class="formControl" placeholder="LogLevel" formControlName="logLevel" />
+	</div>
+
+	<div class="formControl">
+		<input type="text" class="formControl" placeholder="Message" formControlName="message" maxlength="255" />
+	</div>
+
+	<div class="formControl">
+		<input type="textarea" cols="30" rows="3" class="formControl" placeholder="StackTrace" formControlName="stackTrace" />
+	</div>
+
+	<button type="submit" class="btn btn-default">Submit</button>
+</form>
