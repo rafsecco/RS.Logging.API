@@ -36,6 +36,13 @@ public static class ApiConfig
 		{
 			app.UseDeveloperExceptionPage();
 		}
+
+		app.UseCors(x => x
+			.AllowAnyOrigin()
+			.AllowAnyOrigin()
+			.AllowAnyMethod()
+			.AllowAnyHeader());
+
 		app.UseAuthorization();
 		app.MapControllers();
 		return app;
