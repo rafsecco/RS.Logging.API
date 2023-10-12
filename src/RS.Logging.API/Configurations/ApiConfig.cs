@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using RS.Logging.Domain.Log.Contracts;
 using RS.Logging.Infra.Contexts;
+using RS.Logging.Infra.Repositories;
 
 namespace RS.Logging.API.Configurations;
 
@@ -25,6 +27,8 @@ public static class ApiConfig
 				.EnableSensitiveDataLogging()
 				.EnableDetailedErrors()
 		);
+
+		services.AddTransient<ILogRepository, LogRepository>();
 
 		return services;
 	}

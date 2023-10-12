@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using RS.Logging.API.Configurations;
 using RS.Logging.API.ViewModels;
 using RS.Logging.Domain.Log;
-using RS.Logging.Infra.Contexts;
+using RS.Logging.Domain.Log.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +19,13 @@ app.UseSwaggerConfigure();
 #endregion
 
 #region Map Get
+app.MapGet("/GetAll/", ([FromServices] ILogRepository logRepository) =>
+{
+	var logList = logRepository.GetAll();
+	return logList;
+});
+
+
 //app.MapGet("/Search/", ([FromServices] LogsDbContext dbContext, SearchLogsViewModel model) =>
 //{
 //	IQueryable<Log> query = dbContext.Logs.AsNoTracking();
@@ -48,13 +55,21 @@ app.UseSwaggerConfigure();
 #endregion
 
 #region Map Post
-app.MapPost("/CreateLog/", ([FromServices] RSLoggingDbContext dbContext, [FromBody] LogsViewModel pModel) =>
+//app.MapPost("/CreateLog/", ([FromServices] RSLoggingDbContext dbContext, [FromBody] LogsViewModel pModel) =>
+//{
+//	var log = new Log(pModel.LogLevel, pModel.Message, pModel.StackTrace);
+//	dbContext.Logs.Add(log);
+//	int result = dbContext.SaveChanges();
+//	return result;
+//});
+
+app.MapPost("/CreateLog/", ([FromServices] ILogRepository logRepository, [FromBody] LogsViewModel pModel) =>
 {
 	var log = new Log(pModel.LogLevel, pModel.Message, pModel.StackTrace);
-	dbContext.Logs.Add(log);
-	int result = dbContext.SaveChanges();
+	var result = logRepository.Create(log);
 	return result;
 });
+
 #endregion
 
 app.Run();

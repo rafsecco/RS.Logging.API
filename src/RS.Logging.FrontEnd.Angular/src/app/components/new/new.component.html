@@ -1,9 +1,18 @@
-<form [formGroup]="formGroup" (submit)="submit()">
+<form [formGroup]="formGroup" (submit)="sendForm()">
 	<h1>New log</h1>
 
 	<div class="formControl">
-		<input type="text" class="formControl" placeholder="LogLevel" formControlName="logLevel" />
+		<input type="number" class="formControl" placeholder="Valid values [0-6]" formControlName="logLevel" maxlength="1" min="0" max="6" required />
 	</div>
+
+	<!-- <select class="form-control" id="logLevelId" formControlName="logLevelId">
+		<option *ngFor="let logLevel of getLogLevelEnumValues() | keyvalue" value="{{logLevel.key}}">{{logLevel.value}}</option>
+	</select> -->
+
+	<!-- <select class="form-control" id="logLevel" formControlName="logLevel">
+		<option *ngFor="let logLevel of getLogLevelEnumValues()" [value]="logLevel">{{ logLevel | titlecase}}</option>
+	</select> -->
+
 
 	<div class="formControl">
 		<input type="text" class="formControl" placeholder="Message" formControlName="message" maxlength="255" />
