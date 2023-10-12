@@ -1,0 +1,31 @@
+<h1>Logs</h1>
+
+<table class="table table-striped table-hover">
+	<thead class="table-dark">
+		<tr>
+			<th class="d-none d-md-table-cell">#</th>
+			<th>Id LogLevel</th>
+			<th>CreatedAt</th>
+			<th>Message</th>
+			<th>StackTrace</th>
+		</tr>
+	</thead>
+	<tbody *ngIf="logs && logs.length">
+		<tr *ngFor="let log of logs">
+			<td class="d-none d-md-table-cell">{{log.id}}</td>
+			<td>{{log.logLevel}}</td>
+			<td>{{log.createdAt}}</td>
+			<td>{{log.message}}</td>
+			<td>{{log.stackTrace}}</td>
+		</tr>
+	</tbody>
+	<tfoot *ngIf="!logs.length">
+		<tr>
+			<td colspan="8" class="text-center">
+				<h4>No record found!</h4>
+			</td>
+		</tr>
+	</tfoot>
+</table>
+
+

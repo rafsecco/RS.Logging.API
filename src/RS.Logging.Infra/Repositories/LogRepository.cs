@@ -15,10 +15,11 @@ public class LogRepository : ILogRepository
 		_logContext = logContext;
 	}
 
-	public void Create(Log log)
+	public bool Create(Log log)
 	{
 		_logContext.Logs.Add(log);
-		_logContext.SaveChanges();
+		var changes = _logContext.SaveChanges();
+		return changes > 0;
 	}
 
 	public Log? GetById(ulong id)
