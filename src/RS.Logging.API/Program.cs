@@ -19,57 +19,32 @@ app.UseSwaggerConfigure();
 #endregion
 
 #region Map Get
-app.MapGet("/GetAll/", ([FromServices] ILogRepository logRepository) =>
+app.MapGet("/GetAll/{page:int?}/{pageSize:int?}/", ([FromServices] ILogRepository logRepository, int? page, int? pageSize) =>
 {
-	var logList = logRepository.GetAll();
+	var logList = logRepository.GetAll(page, pageSize);
 	return logList;
 });
 
+app.MapGet("/GetById/{id:int}/", ([FromServices] ILogRepository logRepository, ulong id) =>
+{
+	var log = logRepository.GetById(id);
+	return log;
+});
 
-//app.MapGet("/Search/", ([FromServices] LogsDbContext dbContext, SearchLogsViewModel model) =>
+//app.MapGet("/Search/{page:int?}/{pageSize:int?}/", ([FromServices] ILogRepository logRepository, int? page, int? pageSize, SearchLogsViewModel model) =>
 //{
-//	IQueryable<Log> query = dbContext.Logs.AsNoTracking();
-
-//	if (model.DateTimeFim == null) { query = query.Where(p => p.CreatedAt >= model.DateTimeIni); }
-//	else { query = query.Where(p => p.CreatedAt >= model.DateTimeIni && p.CreatedAt <= model.DateTimeFim); }
-
-//	if (model.IdProcess != null) { query = query.Where(p => p.IdProcess == model.IdProcess); }
-//	if (model.LogLevel != null) { query = query.Where(p => p.LogLevel == model.LogLevel); }
-//	if (!string.IsNullOrEmpty(model.Message)) { query = query.Where(s => s.Message.Contains(model.Message)); }
-
-//	query = query.OrderBy(o => o.CreatedAt);
-
-//	#region Pagging
-//	var totalResults = query.Count();
-//	query = query.Skip(model.PageSize * (model.PageIndex - 1)).Take(model.PageSize);
-
-//	var result = new PagedModel<Log>(
-//		totalResults,
-//		model.PageIndex,
-//		model.PageSize,
-//		query.ToList<Log>());
-//	#endregion
-
-//	return result;
+//	var logList = logRepository.GetSearch(page, pageSize, model.DateTimeIni, model.DateTimeFim, model.LogLevel, model.Message);
+//	return logList;
 //});
 #endregion
 
 #region Map Post
-//app.MapPost("/CreateLog/", ([FromServices] RSLoggingDbContext dbContext, [FromBody] LogsViewModel pModel) =>
-//{
-//	var log = new Log(pModel.LogLevel, pModel.Message, pModel.StackTrace);
-//	dbContext.Logs.Add(log);
-//	int result = dbContext.SaveChanges();
-//	return result;
-//});
-
-app.MapPost("/CreateLog/", ([FromServices] ILogRepository logRepository, [FromBody] LogsViewModel pModel) =>
+app.MapPost("/CreateLog", ([FromServices] ILogRepository logRepository, [FromBody] LogsViewModel pModel) =>
 {
 	var log = new Log(pModel.LogLevel, pModel.Message, pModel.StackTrace);
 	var result = logRepository.Create(log);
 	return result;
 });
-
 #endregion
 
 app.Run();

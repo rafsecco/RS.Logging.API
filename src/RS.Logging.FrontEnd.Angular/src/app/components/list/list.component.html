@@ -8,6 +8,7 @@
 			<th>CreatedAt</th>
 			<th>Message</th>
 			<th>StackTrace</th>
+			<th class="text-right">Actions</th>
 		</tr>
 	</thead>
 	<tbody *ngIf="logs && logs.length">
@@ -17,6 +18,9 @@
 			<td>{{log.createdAt}}</td>
 			<td>{{log.message}}</td>
 			<td>{{log.stackTrace}}</td>
+			<td class="text-right">
+				<button type="button" class="btn btn-sm mx-1 btn-warning" title="Edit" (click)="openEdit(log.id)"><i class="bi bi-pencil-square"></i></button>
+			</td>
 		</tr>
 	</tbody>
 	<tfoot *ngIf="!logs.length">
