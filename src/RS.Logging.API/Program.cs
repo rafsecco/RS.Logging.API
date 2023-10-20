@@ -22,54 +22,45 @@ app.UseSwaggerConfigure();
 app.MapGet("/GetAll/", ([FromServices] ILogRepository logRepository) =>
 {
 	var logList = logRepository.GetAll();
-	return logList;
+	return Results.Ok(logList);
 });
 
+app.MapGet("/Search/", (
+	[FromServices] ILogRepository logRepository,
+	[FromQuery(Name = "ds")] DateTime? dateStart,
+	[FromQuery(Name = "de")] DateTime? dateEnd,
+	[FromQuery(Name = "ll")] int? logLevel,
+	[FromQuery(Name = "msg")] string? message,
+	[FromQuery(Name = "pn")] int? pageNumber,
+	[FromQuery(Name = "ps")] int? pageSize) =>
+{
+	LogLevel? ll = (logLevel is null ? null : (LogLevel)logLevel);
 
-//app.MapGet("/Search/", ([FromServices] LogsDbContext dbContext, SearchLogsViewModel model) =>
+	var logList = logRepository.Search(dateStart, dateEnd, ll, message, pageNumber, pageSize);
+	return Results.Ok(logList);
+});
+
+// Exemplo de chamada por rota e query
+//app.MapGet("/Search/{message?}", (
+//	[FromServices] ILogRepository logRepository,
+//	[FromRoute] string? message,
+//	[FromQuery(Name = "ds")] DateTime? dateStart,
+//	[FromQuery(Name = "de")] DateTime? dateEnd,
+//	[FromQuery(Name = "p")] int? page,
+//	[FromQuery(Name = "ps")] int? pageSize) =>
 //{
-//	IQueryable<Log> query = dbContext.Logs.AsNoTracking();
-
-//	if (model.DateTimeFim == null) { query = query.Where(p => p.CreatedAt >= model.DateTimeIni); }
-//	else { query = query.Where(p => p.CreatedAt >= model.DateTimeIni && p.CreatedAt <= model.DateTimeFim); }
-
-//	if (model.IdProcess != null) { query = query.Where(p => p.IdProcess == model.IdProcess); }
-//	if (model.LogLevel != null) { query = query.Where(p => p.LogLevel == model.LogLevel); }
-//	if (!string.IsNullOrEmpty(model.Message)) { query = query.Where(s => s.Message.Contains(model.Message)); }
-
-//	query = query.OrderBy(o => o.CreatedAt);
-
-//	#region Pagging
-//	var totalResults = query.Count();
-//	query = query.Skip(model.PageSize * (model.PageIndex - 1)).Take(model.PageSize);
-
-//	var result = new PagedModel<Log>(
-//		totalResults,
-//		model.PageIndex,
-//		model.PageSize,
-//		query.ToList<Log>());
-//	#endregion
-
-//	return result;
+//	var logList = logRepository.Search(dateStart, dateEnd, message, page, pageSize);
+//	return Results.Ok(logList);
 //});
 #endregion
 
 #region Map Post
-//app.MapPost("/CreateLog/", ([FromServices] RSLoggingDbContext dbContext, [FromBody] LogsViewModel pModel) =>
-//{
-//	var log = new Log(pModel.LogLevel, pModel.Message, pModel.StackTrace);
-//	dbContext.Logs.Add(log);
-//	int result = dbContext.SaveChanges();
-//	return result;
-//});
-
 app.MapPost("/CreateLog/", ([FromServices] ILogRepository logRepository, [FromBody] LogsViewModel pModel) =>
 {
 	var log = new Log(pModel.LogLevel, pModel.Message, pModel.StackTrace);
 	var result = logRepository.Create(log);
-	return result;
+	return Results.Ok(result);
 });
-
 #endregion
 
 app.Run();

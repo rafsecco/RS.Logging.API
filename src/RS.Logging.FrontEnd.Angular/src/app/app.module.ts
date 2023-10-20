@@ -5,8 +5,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { NewComponent } from './components/new/new.component';
-import { ListComponent } from './components/list/list.component';
+import { NewComponent } from './components/logging/new/new.component';
+import { ListComponent } from './components/logging/list/list.component';
 
 @NgModule({
 	declarations: [

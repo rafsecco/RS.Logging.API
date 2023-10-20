@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { NewComponent } from './components/new/new.component';
-import { ListComponent } from './components/list/list.component';
+import { NewComponent } from './components/logging/new/new.component';
+import { ListComponent } from './components/logging/list/list.component';
 
 const routes: Routes = [
 	{ path: '', redirectTo: '/list', pathMatch: 'full' },

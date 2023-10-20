@@ -13,14 +13,16 @@ internal class LogMappings : IEntityTypeConfiguration<Log>
 		builder.HasKey(key => key.Id);
 
 		builder.Property(p => p.Id)
-			.ValueGeneratedOnAdd()
 			.HasColumnName("id_Log")
-			.HasColumnOrder(1);
+			.HasColumnOrder(1)
+			.HasColumnType("BIGINT UNSIGNED")
+			.ValueGeneratedOnAdd();
 
 		builder.Property(p => p.LogLevel)
 			.HasColumnName("ie_LogLevel")
 			.HasColumnOrder(2)
 			.HasColumnType("SMALLINT");
+		//.HasColumnType("SMALLINT UNSIGNED");
 
 		builder.Property(p => p.CreatedAt)
 			.HasColumnName("dt_CreatedAt")
@@ -30,8 +32,8 @@ internal class LogMappings : IEntityTypeConfiguration<Log>
 		builder.Property(p => p.Message)
 			.HasColumnName("ds_Message")
 			.HasColumnOrder(4)
-			.HasMaxLength(255)
-			.HasColumnType("VARCHAR");
+			.HasColumnType("VARCHAR")
+			.HasMaxLength(255);
 
 		builder.Property(p => p.StackTrace)
 			.HasColumnName("ds_StackTrace")
