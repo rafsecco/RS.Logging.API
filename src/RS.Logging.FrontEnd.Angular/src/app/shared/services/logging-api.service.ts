@@ -16,8 +16,12 @@ export class LoggingApiService {
 		return this.http.post(`${this.baseUrl}/CreateLog/`, data);
 	}
 
-	public getAll(): Observable<Log[]> {
-		return this.http.get<Log[]>(`${this.baseUrl}/GetAll/`);
+	public getAll(page: number, pageSize: number): Observable<Log[]> {
+		return this.http.get<Log[]>(`${this.baseUrl}/GetAll/${page}/${pageSize}`);
+	}
+
+	public getById(id: number): Observable<Log> {
+		return this.http.get<Log>(`${this.baseUrl}/GetById/${id}`);
 	}
 
 }

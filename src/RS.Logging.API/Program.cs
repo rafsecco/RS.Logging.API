@@ -1,9 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-using RS.Logging.API.Configurations;
-using RS.Logging.API.ViewModels;
-using RS.Logging.Domain.Log;
-using RS.Logging.Domain.Log.Contracts;
-
 var builder = WebApplication.CreateBuilder(args);
 
 #region ConfigureService

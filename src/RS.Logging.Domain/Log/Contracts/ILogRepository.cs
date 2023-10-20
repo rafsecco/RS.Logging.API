@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Logging;
-
 namespace RS.Logging.Domain.Log.Contracts;
 
 public interface ILogRepository
