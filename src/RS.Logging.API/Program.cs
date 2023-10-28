@@ -1,3 +1,9 @@
+using Microsoft.AspNetCore.Mvc;
+using RS.Logging.API.Configurations;
+using RS.Logging.API.ViewModels;
+using RS.Logging.Domain.Log;
+using RS.Logging.Domain.Log.Contracts;
+
 var builder = WebApplication.CreateBuilder(args);
 
 #region ConfigureService
@@ -13,9 +19,12 @@ app.UseSwaggerConfigure();
 #endregion
 
 #region Map Get
-app.MapGet("/GetAll/", ([FromServices] ILogRepository logRepository) =>
+app.MapGet("/GetAll/", (
+	[FromServices] ILogRepository logRepository,
+	[FromQuery(Name = "pn")] int? pageNumber,
+	[FromQuery(Name = "ps")] int? pageSize) =>
 {
-	var logList = logRepository.GetAll();
+	var logList = logRepository.GetAll(pageNumber, pageSize);
 	return Results.Ok(logList);
 });
 
@@ -33,19 +42,6 @@ app.MapGet("/Search/", (
 	var logList = logRepository.Search(dateStart, dateEnd, ll, message, pageNumber, pageSize);
 	return Results.Ok(logList);
 });
-
-// Exemplo de chamada por rota e query
-//app.MapGet("/Search/{message?}", (
-//	[FromServices] ILogRepository logRepository,
-//	[FromRoute] string? message,
-//	[FromQuery(Name = "ds")] DateTime? dateStart,
-//	[FromQuery(Name = "de")] DateTime? dateEnd,
-//	[FromQuery(Name = "p")] int? page,
-//	[FromQuery(Name = "ps")] int? pageSize) =>
-//{
-//	var logList = logRepository.Search(dateStart, dateEnd, message, page, pageSize);
-//	return Results.Ok(logList);
-//});
 #endregion
 
 #region Map Post

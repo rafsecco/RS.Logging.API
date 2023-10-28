@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using RS.Logging.Domain.Log;
+using RS.Logging.Domain.LogProcess;
 
 namespace RS.Logging.Infra.Contexts;
 public class RSLoggingDbContext : DbContext
 {
 	public DbSet<Log> Logs { get; set; }
+	public DbSet<LogProcess> LogProcess { get; set; }
 
 	public RSLoggingDbContext(DbContextOptions<RSLoggingDbContext> options) : base(options) { }
 

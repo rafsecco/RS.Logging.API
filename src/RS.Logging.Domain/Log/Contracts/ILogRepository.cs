@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging;
+
 namespace RS.Logging.Domain.Log.Contracts;
 
 public interface ILogRepository
@@ -6,7 +8,7 @@ public interface ILogRepository
 
 	Log? GetById(ulong id);
 
-	IEnumerable<Log> GetAll();
+	IEnumerable<Log> GetAll(int? page, int? pageSize);
 
 	IEnumerable<Log> Search(
 		DateTime? dateTimeStart,

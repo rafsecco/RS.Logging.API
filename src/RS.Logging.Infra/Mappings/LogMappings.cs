@@ -21,7 +21,7 @@ internal class LogMappings : IEntityTypeConfiguration<Log>
 		builder.Property(p => p.LogLevel)
 			.HasColumnName("ie_LogLevel")
 			.HasColumnOrder(2)
-			.HasColumnType("SMALLINT");
+			.HasColumnType("SMALLINT UNSIGNED");
 		//.HasColumnType("SMALLINT UNSIGNED");
 
 		builder.Property(p => p.CreatedAt)
@@ -40,8 +40,8 @@ internal class LogMappings : IEntityTypeConfiguration<Log>
 			.HasColumnOrder(5);
 		//.HasColumnType("VARCHAR");
 
-		builder.HasIndex(i => i.CreatedAt, "idx_Logs_CreatedAt");
-		builder.HasIndex(i => new { i.CreatedAt, i.LogLevel }, "idx_Logs_CreatedAt-LogLevel");
+		builder.HasIndex(i => i.CreatedAt, "idx_TB_Log_dt_CreatedAt");
+		builder.HasIndex(i => new { i.CreatedAt, i.LogLevel }, "idx_TB_Log_dt_CreatedAt-ie_LogLevel");
 	}
 }
 
