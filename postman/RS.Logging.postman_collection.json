@@ -1,44 +1,102 @@
 {
 	"info": {
-		"_postman_id": "0a683397-8e5c-4fa8-b02a-e9254df99e0c",
+		"_postman_id": "5753fb9a-2378-4e0e-a389-f07bb7c8805d",
 		"name": "RS.Logging",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10981583"
 	},
 	"item": [
 		{
-			"name": "Search",
+			"name": "GetAll",
 			"request": {
-				"method": "POST",
+				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"pageIndex\": 1,\r\n    \"pageSize\": 5,\r\n    \"dateTimeIni\": \"2022-02-12T00:00:00.000Z\",\r\n    \"dateTimeFim\": null,\r\n    \"message\": null,\r\n    \"logLevel\": null,\r\n    \"idProcess\": null\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
 				"url": {
-					"raw": "{{URL}}/Search",
+					"raw": "{{URL}}/GetAll?pn=1&ps=5",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
-						"Search"
+						"GetAll"
+					],
+					"query": [
+						{
+							"key": "pn",
+							"value": "1"
+						},
+						{
+							"key": "ps",
+							"value": "5"
+						}
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "CreateCompleteLog",
+			"name": "Search",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/Search/",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"Search",
+						""
+					],
+					"query": [
+						{
+							"key": "ds",
+							"value": "2024-01-06",
+							"description": "Date Start",
+							"disabled": true
+						},
+						{
+							"key": "de",
+							"value": "2024-01-06T09:43:00",
+							"description": "Date End",
+							"disabled": true
+						},
+						{
+							"key": "ll",
+							"value": "4",
+							"description": "logLevel",
+							"disabled": true
+						},
+						{
+							"key": "msg",
+							"value": "teste 1",
+							"description": "message",
+							"disabled": true
+						},
+						{
+							"key": "pn",
+							"value": "2",
+							"description": "Page Number",
+							"disabled": true
+						},
+						{
+							"key": "ps",
+							"value": "1",
+							"description": "Page Size",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateLog",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "[\r\n    {\r\n        \"IdProcess\": 1,\r\n        \"LogLevel\": 1,\r\n        \"Message\": \"Message1\",\r\n        \"Info\": \"Info1\",\r\n        \"DateCreated\": \"2022-02-14T08:00:00.000Z\"\r\n    },\r\n    {\r\n        \"IdProcess\": 1,\r\n        \"LogLevel\": 1,\r\n        \"Message\": \"Message2\",\r\n        \"Info\": \"Info2\",\r\n        \"DateCreated\": \"2022-02-14T09:00:00.000Z\"\r\n    }\r\n]",
+					"raw": "{\r\n  \"logLevel\": 5,\r\n  \"message\": \"Teste 3\",\r\n  \"stackTrace\": \"Teste 3\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -52,6 +110,58 @@
 					],
 					"path": [
 						"CreateLog"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create LogProcess",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"processId\": 1,\r\n  \"name\": \"Processo A\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/CreateLogProcess",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"CreateLogProcess"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create LogProcessDetail",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"logProcessId\": 2,\r\n  \"logLevel\": 6,\r\n  \"message\": \"Teste 2\",\r\n  \"stackTrace\": \"Teste 2\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/CreateLogProcessDetail",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"CreateLogProcessDetail"
 					]
 				}
 			},
@@ -82,6 +192,12 @@
 		{
 			"key": "URL",
 			"value": "http://localhost:5000",
+			"type": "string",
+			"disabled": true
+		},
+		{
+			"key": "URL",
+			"value": "https://localhost:7000",
 			"type": "string"
 		}
 	]
