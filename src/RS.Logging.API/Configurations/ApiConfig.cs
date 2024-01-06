@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RS.Logging.Domain.Log.Contracts;
+using RS.Logging.Domain.LogProcess.Contracts;
 using RS.Logging.Infra.Contexts;
 using RS.Logging.Infra.Repositories;
 
@@ -29,6 +30,7 @@ public static class ApiConfig
 		);
 
 		services.AddTransient<ILogRepository, LogRepository>();
+		services.AddTransient<ILogProcessRepository, LogProcessRepository>();
 
 		return services;
 	}

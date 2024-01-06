@@ -18,5 +18,4 @@ public interface ILogRepository
 		int? pageNumber,
 		int? pageSize
 	);
-
 }

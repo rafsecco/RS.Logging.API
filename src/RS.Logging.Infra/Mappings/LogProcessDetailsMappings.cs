@@ -4,9 +4,9 @@ using RS.Logging.Domain.LogProcess;
 
 namespace RS.Logging.Infra.Mappings;
 
-internal class LogProcessDetailsMappings : IEntityTypeConfiguration<LogProcessDetails>
+internal class LogProcessDetailsMappings : IEntityTypeConfiguration<LogProcessDetail>
 {
-	public void Configure(EntityTypeBuilder<LogProcessDetails> builder)
+	public void Configure(EntityTypeBuilder<LogProcessDetail> builder)
 	{
 		builder.ToTable("TB_LogProcessDetail");
 

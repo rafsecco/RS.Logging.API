@@ -3,6 +3,8 @@ using RS.Logging.API.Configurations;
 using RS.Logging.API.ViewModels;
 using RS.Logging.Domain.Log;
 using RS.Logging.Domain.Log.Contracts;
+using RS.Logging.Domain.LogProcess;
+using RS.Logging.Domain.LogProcess.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,9 @@ var app = builder.Build();
 app.UseApiConfigure();
 app.UseSwaggerConfigure();
 #endregion
+
+
+#region Log
 
 #region Map Get
 app.MapGet("/GetAll/", (
@@ -44,7 +49,7 @@ app.MapGet("/Search/", (
 });
 #endregion
 
-#region Map Post
+#region Map Post 
 app.MapPost("/CreateLog/", ([FromServices] ILogRepository logRepository, [FromBody] LogsViewModel pModel) =>
 {
 	var log = new Log(pModel.LogLevel, pModel.Message, pModel.StackTrace);
@@ -52,5 +57,32 @@ app.MapPost("/CreateLog/", ([FromServices] ILogRepository logRepository, [FromBo
 	return Results.Ok(result);
 });
 #endregion
+
+#endregion
+
+#region LogProcess
+
+#region Map Post
+app.MapPost("/CreateLogProcess/", (
+	[FromServices] ILogProcessRepository logProcessRepository,
+	[FromBody] LogProcessViewModel pModel) =>
+{
+	var logProcess = new LogProcess(pModel.ProcessId, pModel.Name);
+	var result = logProcessRepository.CreateLogProcess(logProcess);
+	return Results.Ok(result);
+});
+
+app.MapPost("/CreateLogProcessDetail/", (
+	[FromServices] ILogProcessRepository logProcessRepository,
+	[FromBody] LogProcessDetailsViewModel pModel) =>
+{
+	var logProcessDetail = new LogProcessDetail(pModel.LogProcessId, pModel.LogLevel, pModel.Message, pModel.StackTrace);
+	var result = logProcessRepository.CreateLogProcessDetail(logProcessDetail);
+	return Results.Ok(result);
+});
+#endregion
+
+#endregion
+
 
 app.Run();

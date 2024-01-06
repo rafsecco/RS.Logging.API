@@ -7,6 +7,7 @@ public class RSLoggingDbContext : DbContext
 {
 	public DbSet<Log> Logs { get; set; }
 	public DbSet<LogProcess> LogProcess { get; set; }
+	public DbSet<LogProcessDetail> LogProcessDetails { get; set; }
 
 	public RSLoggingDbContext(DbContextOptions<RSLoggingDbContext> options) : base(options) { }
 

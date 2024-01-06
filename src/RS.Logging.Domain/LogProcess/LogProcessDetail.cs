@@ -3,11 +3,11 @@ using RS.Core.Entities;
 
 namespace RS.Logging.Domain.LogProcess;
 
-public class LogProcessDetails : BaseEntity
+public class LogProcessDetail : BaseEntity
 {
 	#region Constructors
-	protected LogProcessDetails() { }
-	public LogProcessDetails(ulong pLogProcessId, LogLevel pLogLevel, string pMessage, string? pStackTrace = null)
+	protected LogProcessDetail() { }
+	public LogProcessDetail(ulong pLogProcessId, LogLevel pLogLevel, string pMessage, string? pStackTrace = null)
 	{
 		LogProcessId = pLogProcessId;
 		LogLevel = pLogLevel;
