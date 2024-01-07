@@ -9,15 +9,41 @@ using RS.Logging.Domain.LogProcess.Contracts;
 var builder = WebApplication.CreateBuilder(args);
 
 #region ConfigureService
-builder.Services.AddApiConfigureServices(builder.Configuration);
-builder.Services.AddSwaggerConfigureServices();
+builder
+	.AddApiConfig()
+	.AddCorsConfig()
+	.AddSwaggerConfig()
+	.AddDbContextConfig();
+//builder.Services.AddApiConfigureServices(builder.Configuration);
+//builder.Services.AddSwaggerConfigureServices();
 #endregion
 
 var app = builder.Build();
 
 #region Configure
-app.UseApiConfigure();
-app.UseSwaggerConfigure();
+//if (app.Environment.IsDevelopment())
+//{
+//	app.UseDeveloperExceptionPage();
+//	app.UseSwagger();
+//	//app.UseSwaggerUI();
+//	app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RS.Logging.API v1"));
+//	app.UseCors("Development");
+//	//app.UseCors("Production");
+//}
+//else
+//{
+//	app.UseCors("Production");
+//}
+
+//app.UseHttpsRedirection();
+////app.UseAuthentication();
+////app.UseAuthorization();
+//app.MapControllers();
+
+
+app.UseApiConfigure()
+	.UseCorsConfigure()
+	.UseSwaggerConfigure();
 #endregion
 
 
