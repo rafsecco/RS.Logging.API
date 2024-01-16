@@ -35,8 +35,8 @@ internal class LogProcessMappings : IEntityTypeConfiguration<LogProcess>
 			.HasMaxLength(255);
 
 		// Index
-		builder.HasIndex(i => i.CreatedAt, "idx-TB_LogProcess_dt_CreatedAt");
-		builder.HasIndex(i => new { i.CreatedAt, i.ProcessId }, "idx-TB_LogProcess_dt_CreatedAt-id_Process");
+		builder.HasIndex(i => i.CreatedAt, "IDX-TB_LogProcess_dt_CreatedAt");
+		builder.HasIndex(i => new { i.CreatedAt, i.ProcessId }, "IDX-TB_LogProcess_dt_CreatedAt-id_Process");
 
 		// Relationship
 		builder

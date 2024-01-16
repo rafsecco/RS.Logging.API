@@ -1,10 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using RS.Logging.API.Configurations;
 using RS.Logging.API.ViewModels;
 using RS.Logging.Domain.Log;
 using RS.Logging.Domain.Log.Contracts;
 using RS.Logging.Domain.LogProcess;
 using RS.Logging.Domain.LogProcess.Contracts;
+using System.Diagnostics;
+using System;
+using RS.Logging.Infra.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,33 +18,11 @@ builder
 	.AddCorsConfig()
 	.AddSwaggerConfig()
 	.AddDbContextConfig();
-//builder.Services.AddApiConfigureServices(builder.Configuration);
-//builder.Services.AddSwaggerConfigureServices();
 #endregion
 
 var app = builder.Build();
 
 #region Configure
-//if (app.Environment.IsDevelopment())
-//{
-//	app.UseDeveloperExceptionPage();
-//	app.UseSwagger();
-//	//app.UseSwaggerUI();
-//	app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RS.Logging.API v1"));
-//	app.UseCors("Development");
-//	//app.UseCors("Production");
-//}
-//else
-//{
-//	app.UseCors("Production");
-//}
-
-//app.UseHttpsRedirection();
-////app.UseAuthentication();
-////app.UseAuthorization();
-//app.MapControllers();
-
-
 app.UseApiConfigure()
 	.UseCorsConfigure()
 	.UseSwaggerConfigure();
@@ -48,14 +30,20 @@ app.UseApiConfigure()
 
 
 #region Log
-
-#region Map Get
 app.MapGet("/GetAll/", (
 	[FromServices] ILogRepository logRepository,
 	[FromQuery(Name = "pn")] int? pageNumber,
 	[FromQuery(Name = "ps")] int? pageSize) =>
 {
 	var logList = logRepository.GetAll(pageNumber, pageSize);
+	return Results.Ok(logList);
+});
+
+app.MapGet("/GetById/{id:int}", (
+	[FromServices] ILogRepository logRepository,
+	ulong id) =>
+{
+	var logList = logRepository.GetById(id);
 	return Results.Ok(logList);
 });
 
@@ -73,9 +61,7 @@ app.MapGet("/Search/", (
 	var logList = logRepository.Search(dateStart, dateEnd, ll, message, pageNumber, pageSize);
 	return Results.Ok(logList);
 });
-#endregion
 
-#region Map Post 
 app.MapPost("/CreateLog/", ([FromServices] ILogRepository logRepository, [FromBody] LogsViewModel pModel) =>
 {
 	var log = new Log(pModel.LogLevel, pModel.Message, pModel.StackTrace);
@@ -84,11 +70,52 @@ app.MapPost("/CreateLog/", ([FromServices] ILogRepository logRepository, [FromBo
 });
 #endregion
 
-#endregion
-
 #region LogProcess
+app.MapGet("/GetAllLogProcess/", (
+	[FromServices] ILogProcessRepository logProcessRepository,
+	[FromQuery(Name = "pn")] int? pageNumber,
+	[FromQuery(Name = "ps")] int? pageSize) =>
+{
+	var logProcessList = logProcessRepository.GetAll(pageNumber, pageSize);
+	return Results.Ok(logProcessList);
+});
 
-#region Map Post
+app.MapGet("/GetLogProcessById/{id:int}/", (
+	[FromServices] ILogProcessRepository logProcessRepository,
+	ulong id) =>
+{
+	var logProcess = logProcessRepository.GetById(id);
+	return Results.Ok(logProcess);
+});
+
+app.MapGet("/LogProcessSearch/", (
+	[FromServices] ILogProcessRepository logProcessRepository,
+	[FromQuery(Name = "ds")] DateTime? dateStart,
+	[FromQuery(Name = "de")] DateTime? dateEnd,
+	[FromQuery(Name = "idp")] uint? IdProcess,
+	[FromQuery(Name = "nm")] string? processName,
+	[FromQuery(Name = "ll")] int? logLevel,
+	[FromQuery(Name = "msg")] string? message,
+	[FromQuery(Name = "st")] string? stackTrace,
+	[FromQuery(Name = "pn")] int? pageNumber,
+	[FromQuery(Name = "ps")] int? pageSize) =>
+{
+	LogLevel? ll = (logLevel is null ? null : (LogLevel)logLevel);
+
+	var logProcessList = logProcessRepository.Search(
+		dateEnd,
+		dateEnd,
+		IdProcess,
+		processName,
+		ll,
+		message,
+		stackTrace,
+		pageSize,
+		pageSize);
+
+	return Results.Ok(logProcessList);
+});
+
 app.MapPost("/CreateLogProcess/", (
 	[FromServices] ILogProcessRepository logProcessRepository,
 	[FromBody] LogProcessViewModel pModel) =>
@@ -107,8 +134,5 @@ app.MapPost("/CreateLogProcessDetail/", (
 	return Results.Ok(result);
 });
 #endregion
-
-#endregion
-
 
 app.Run();

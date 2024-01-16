@@ -11,11 +11,11 @@ public static class CorsConfig
 					.AllowAnyOrigin()
 					.AllowAnyMethod()
 					.AllowAnyHeader());
-			//options.AddPolicy("Production", builder =>
-			//	builder
-			//		.WithOrigins("https://localhost:7000")
-			//		.WithMethods("POST")
-			//		.AllowAnyHeader());
+			options.AddPolicy("Production", builder =>
+				builder
+					.WithOrigins("https://localhost:7000")
+					.WithMethods("POST", "GET")
+					.AllowAnyHeader());
 		});
 
 		return builder;
@@ -25,8 +25,8 @@ public static class CorsConfig
 	{
 		if (app.Environment.IsDevelopment())
 		{
-			app.UseCors();
-			//app.UseCors("Development");
+			//app.UseCors();
+			app.UseCors("Development");
 			//app.UseCors("Production");
 		}
 		else

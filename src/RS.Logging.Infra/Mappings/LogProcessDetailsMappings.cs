@@ -54,6 +54,7 @@ internal class LogProcessDetailsMappings : IEntityTypeConfiguration<LogProcessDe
 			.HasOne(e => e.LogProcess)
 			.WithMany(e => e.LorProcessDetailList)
 			.HasForeignKey(e => e.LogProcessId)
+			.HasConstraintName("FK-TB_LogProcessDetail_cd_Process-TB_LogProcess_id_LogProcess")
 			.IsRequired();
 	}
 }

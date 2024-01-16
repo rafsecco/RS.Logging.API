@@ -33,23 +33,3 @@ public static class DbContextConfig
 		return builder;
 	}
 }
-
-
-
-//	services.AddDbContext<RSLoggingDbContext>
-//	(
-//		options => options
-//			.UseMySql(strConn, ServerVersion.AutoDetect(strConn), e =>
-//			{
-//				e.EnableRetryOnFailure(
-//					maxRetryCount: 3,
-//					maxRetryDelay: TimeSpan.FromSeconds(6),
-//					errorNumbersToAdd: null);
-//			})
-//			.LogTo(Console.WriteLine)
-//			.EnableSensitiveDataLogging()
-//			.EnableDetailedErrors()
-//	);
-
-//	services.AddTransient<ILogRepository, LogRepository>();
-//	services.AddTransient<ILogProcessRepository, LogProcessRepository>();
