@@ -1,6 +1,6 @@
 {
   "name": "rs.logging",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Projeto de estudo de minimal API\r Uma API para fazer o log geral e log de processos",
   "main": "index.js",
   "scripts": {
