@@ -13,6 +13,20 @@ docker-compose -p rs_logging up -d
 
 Para testar importe a collection do postman disponibilizada
 
+## Padronização dos commits e versão
+
+Use o comando `npm run commit` para gerar commits seguindo o padrão de Conventional Commits.
+```
+npm run commit
+```
+
+Para gerar automaticamente a nova versão, baseado nas mensagens de commit, use o comando:
+```
+npx standard-version
+```
+
+
+
 ## Futuras implementações
 - [X] Adicionar log geral
 - [ ] Adicionar log de processos
