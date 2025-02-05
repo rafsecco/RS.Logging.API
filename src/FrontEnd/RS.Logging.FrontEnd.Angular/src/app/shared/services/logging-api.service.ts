@@ -17,7 +17,7 @@ export class LoggingApiService {
 	}
 
 	public getAll(page: number, pageSize: number): Observable<Log[]> {
-		return this.http.get<Log[]>(`${this.baseUrl}/GetAll/${page}/${pageSize}`);
+		return this.http.get<Log[]>(`${this.baseUrl}/GetAll?pn=${page}&ps=${pageSize}`);
 	}
 
 	public getById(id: number): Observable<Log> {

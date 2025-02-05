@@ -21,8 +21,8 @@ export class ListComponent {
 		private router: Router,
 		private activatedRouter: ActivatedRoute
 	) {
-		this.page = +this.activatedRouter.snapshot.params['page'];
-		this.pageSize = +this.activatedRouter.snapshot.params['pageSize'];
+		this.page = +this.activatedRouter.snapshot.params['page'] || 1;
+		this.pageSize = +this.activatedRouter.snapshot.params['pageSize'] || 10;
 		this.LoadLogList();
 	}
 
