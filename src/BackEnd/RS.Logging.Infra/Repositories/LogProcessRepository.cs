@@ -53,6 +53,36 @@ public class LogProcessRepository : ILogProcessRepository
 		.Include(x => x.LorProcessDetailList)
 		.FirstOrDefault(p => p.Id == id);
 
+	public IEnumerable<LogProcess> GetAudit(
+		DateTime? dateTimeStart,
+		DateTime? dateTimeEnd,
+		ProcessStatus? status,
+		int? pageNumber = 1,
+		int? pageSize = 10)
+	{
+		var query = _logProcessContext.LogProcess
+			.Include(x => x.LorProcessDetailList)
+			.AsNoTracking();
+
+		if (dateTimeStart.HasValue)
+			query = query.Where(p => p.CreatedAt >= dateTimeStart.Value);
+
+		if (dateTimeEnd.HasValue)
+			query = query.Where(p => p.CreatedAt <= dateTimeEnd.Value);
+
+		query = query.OrderByDescending(o => o.CreatedAt);
+
+		if (pageNumber.HasValue && pageSize.HasValue)
+			query = query.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value);
+
+		var result = query.ToList();
+
+		if (status.HasValue)
+			result = result.Where(p => p.GetStatus() == status.Value).ToList();
+
+		return result;
+	}
+
 	public IEnumerable<LogProcess> Search(
 		DateTime? dateTimeStart,
 		DateTime? dateTimeEnd,

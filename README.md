@@ -26,7 +26,7 @@ docs:     documentação
 
 ## Futuras implementações
 - [X] Adicionar log geral
-- [ ] Adicionar log de processos
+- [X] Adicionar log de processos
 - [ ] Criar o projeto de testes
 - [ ] Refatorar
 - [ ] Segurança

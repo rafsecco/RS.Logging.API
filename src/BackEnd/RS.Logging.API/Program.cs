@@ -135,4 +135,35 @@ app.MapPost("/CreateLogProcessDetail/", (
 });
 #endregion
 
+#region Audit
+app.MapGet("/LogProcessAudit/", (
+	[FromServices] ILogProcessRepository logProcessRepository,
+	[FromQuery(Name = "ds")] DateTime? dateStart,
+	[FromQuery(Name = "de")] DateTime? dateEnd,
+	[FromQuery(Name = "st")] int? status,
+	[FromQuery(Name = "pn")] int? pageNumber,
+	[FromQuery(Name = "ps")] int? pageSize) =>
+{
+	ProcessStatus? processStatus = status.HasValue ? (ProcessStatus)status.Value : null;
+
+	var result = logProcessRepository
+		.GetAudit(dateStart, dateEnd, processStatus, pageNumber, pageSize)
+		.Select(AuditLogProcessViewModel.FromDomain);
+
+	return Results.Ok(result);
+});
+
+app.MapGet("/LogProcessAudit/{id:long}", (
+	[FromServices] ILogProcessRepository logProcessRepository,
+	ulong id) =>
+{
+	var process = logProcessRepository.GetById(id);
+
+	if (process is null)
+		return Results.NotFound();
+
+	return Results.Ok(AuditLogProcessViewModel.FromDomain(process));
+});
+#endregion
+
 app.Run();

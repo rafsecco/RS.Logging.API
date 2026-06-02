@@ -23,4 +23,12 @@ public interface ILogProcessRepository
 		int? pageNumber,
 		int? pageSize
 	);
+
+	IEnumerable<LogProcess> GetAudit(
+		DateTime? dateTimeStart,
+		DateTime? dateTimeEnd,
+		ProcessStatus? status,
+		int? pageNumber,
+		int? pageSize
+	);
 }
