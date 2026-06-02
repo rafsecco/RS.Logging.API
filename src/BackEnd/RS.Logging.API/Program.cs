@@ -103,14 +103,14 @@ app.MapGet("/LogProcessSearch/", (
 	LogLevel? ll = (logLevel is null ? null : (LogLevel)logLevel);
 
 	var logProcessList = logProcessRepository.Search(
-		dateEnd,
+		dateStart,
 		dateEnd,
 		IdProcess,
 		processName,
 		ll,
 		message,
 		stackTrace,
-		pageSize,
+		pageNumber,
 		pageSize);
 
 	return Results.Ok(logProcessList);
