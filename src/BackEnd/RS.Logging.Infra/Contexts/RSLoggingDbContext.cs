@@ -13,9 +13,8 @@ public class RSLoggingDbContext : DbContext
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
-		//latin2_general_ci (Default)
-		modelBuilder.UseCollation("utf8_general_ci");
-		//modelBuilder.HasDefaultSchema("RS.Logging");
+		if (Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
+			modelBuilder.UseCollation("utf8_general_ci");
 
 		modelBuilder.ApplyConfigurationsFromAssembly(typeof(RSLoggingDbContext).Assembly);
 

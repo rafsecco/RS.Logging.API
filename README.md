@@ -27,7 +27,7 @@ docs:     documentação
 ## Futuras implementações
 - [X] Adicionar log geral
 - [X] Adicionar log de processos
-- [ ] Criar o projeto de testes
+- [X] Criar o projeto de testes
 - [ ] Refatorar
 - [ ] Segurança
 - [ ] Multi-Tenant

@@ -2,13 +2,15 @@ root = true
 
 [*]
 charset = utf-8
-indent_style = tab
+indent_style = space
 indent_size = 2
-insert_final_newline = false
+insert_final_newline = true
 trim_trailing_whitespace = true
+end_of_line = lf
 
 [*.{txt,cs,html,cshtml}]
 indent_size = 4
+indent_style = tab
 
 [*.ts]
 quote_type = single
