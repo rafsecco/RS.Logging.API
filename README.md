@@ -1,17 +1,24 @@
 # RS.Logging
-Projeto de estudo de minimal API
-Uma API para fazer o log geral e log de processos
 
-## Descrição e configuração do docker para testar o projeto
-O script irá criar dois containers, um para o banco de dados (mariadb) e outro para a API (C#)
+Projeto de minimal API (.NET 10) para fazer o log geral e log de processos de outras aplicações.
 
-No prompt de comando navegue até a pasta ".\docker" do projeto e execute os comandos abaixo:
+Objetivo: entender problemas técnicos (exceções, erros HTTP, tempo de resposta, uso de
+endpoints, falhas externas, métricas e rastreamento entre serviços).
+
+## Subindo o projeto com Docker
+
+O `docker-compose.yml` cria dois containers: um para o banco de dados (MariaDB) e outro
+para a API (.NET).
+
+Na raiz do projeto, execute:
+```bash
+docker compose -f docker/docker-compose.yml up --build
 ```
-docker-compose -p rs_logging build
-docker-compose -p rs_logging up -d
-```
 
-Para testar importe a collection do postman disponibilizada
+- API: http://localhost:5000
+- Swagger: http://localhost:5000/swagger (apenas em Development)
+
+Para testar os endpoints, importe a collection do Postman disponível em `postman/`.
 
 ## Padronização dos commits
 
@@ -24,10 +31,23 @@ refactor: refatoração sem mudança de comportamento
 docs:     documentação
 ```
 
-## Futuras implementações
-- [X] Adicionar log geral
-- [X] Adicionar log de processos
-- [X] Criar o projeto de testes
+## Roadmap
+
+- [X] Log geral
+- [X] Log de processos
+- [X] Projeto de testes
+- [X] Auditoria de processos (status agregado por processo)
+- [X] Upgrade para .NET 10
 - [ ] Refatorar
-- [ ] Segurança
-- [ ] Multi-Tenant
+- [ ] Segurança (autenticação/autorização)
+- [ ] Ingestão assíncrona (fila/background) para não gravar log direto no banco da API
+- [ ] CorrelationId / TraceId
+- [ ] Multi-tenant
+- [ ] Busca full-text
+- [ ] Batch ingestion
+- [ ] Compressão
+- [ ] Retention por aplicação
+- [ ] Webhook
+- [ ] Dashboard
+- [ ] Export para Elastic/OpenSearch
+- [ ] Dead-letter queue
