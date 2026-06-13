@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using RS.Core.Pagination;
 using RS.Logging.Domain.LogProcess;
 using RS.Logging.Domain.LogProcess.Contracts;
 using RS.Logging.Infra.Contexts;
@@ -37,7 +38,7 @@ public class LogProcessRepository : ILogProcessRepository
 		if (page.HasValue && pageSize.HasValue)
 		{
 			query = query
-				.Skip((page.Value - 1) * pageSize.Value)
+				.Skip(PaginationHelper.GetSkip(page.Value, pageSize.Value))
 				.Take(pageSize.Value);
 		}
 
@@ -73,7 +74,7 @@ public class LogProcessRepository : ILogProcessRepository
 		query = query.OrderByDescending(o => o.CreatedAt);
 
 		if (pageNumber.HasValue && pageSize.HasValue)
-			query = query.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value);
+			query = query.Skip(PaginationHelper.GetSkip(pageNumber.Value, pageSize.Value)).Take(pageSize.Value);
 
 		var result = query.ToList();
 
@@ -118,8 +119,12 @@ public class LogProcessRepository : ILogProcessRepository
 		if (!string.IsNullOrEmpty(stackTrace?.Trim()))
 			query = query.Where(p => p.StackTrace.Contains(stackTrace));
 
+		var skip = (pageNumber.HasValue && pageSize.HasValue)
+			? PaginationHelper.GetSkip(pageNumber.Value, pageSize.Value)
+			: 0;
+
 		query = query
-			.Skip((pageNumber - 1) * pageSize ?? 0)
+			.Skip(skip)
 			.Take(pageSize ?? 10);
 
 		query = query.Include(tb => tb.LogProcess);

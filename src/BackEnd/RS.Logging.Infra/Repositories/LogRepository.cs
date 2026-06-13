@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using RS.Core.Pagination;
 using RS.Logging.Domain.Log;
 using RS.Logging.Domain.Log.Contracts;
 using RS.Logging.Infra.Contexts;
@@ -31,7 +32,7 @@ public class LogRepository : ILogRepository
 		if (page.HasValue && pageSize.HasValue)
 		{
 			query = query
-				.Skip((page.Value - 1) * pageSize.Value)
+				.Skip(PaginationHelper.GetSkip(page.Value, pageSize.Value))
 				.Take(pageSize.Value);
 		}
 
@@ -68,13 +69,9 @@ public class LogRepository : ILogRepository
 
 		if (pageNumber is not null && pageSize is not null)
 		{
-			var registerSkipped = pageNumber == 1
-				? 0
-				: (pageNumber * pageSize - pageSize);
-
 			query = query
-				.Skip((int)registerSkipped)
-				.Take((int)pageSize);
+				.Skip(PaginationHelper.GetSkip(pageNumber.Value, pageSize.Value))
+				.Take(pageSize.Value);
 		}
 
 		return query.ToList();
