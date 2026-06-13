@@ -79,8 +79,16 @@ Camadas no backend (dependency flow: API → Domain ← Infra):
 Cada configuração fica em seu próprio arquivo:
 - `ApiConfig.cs` — JSON options, controllers, middleware pipeline
 - `DbContextConfig.cs` — connection string, retry policy (3x / 6s)
-- `CorsConfig.cs` — AllowAnyOrigin em Development, localhost:7000 em Production
+- `CorsConfig.cs` — AllowAnyOrigin em Development, origens de Production via `appsettings.Production.json` (`Cors:AllowedOrigins`)
 - `SwaggerConfig.cs` — habilitado apenas em Development
+- `IngestionConfig.cs` — registra a fila de ingestão (`Ingestion/`)
+
+### Ingestão assíncrona (`Ingestion/`)
+`CreateLog` e `CreateLogProcessDetail` enfileiram o item em `LogIngestionQueue`
+(Channel in-memory) e retornam `202 Accepted`. `LogIngestionWorker`
+(`BackgroundService`) consome a fila, abre um scope de DI e grava no banco.
+`CreateLogProcess` continua síncrono — retorna o `Id` (FK necessária para os
+`CreateLogProcessDetail` seguintes).
 
 ## Convenções
 
@@ -106,6 +114,5 @@ IDs: `ulong` (BIGINT UNSIGNED auto-increment). Sempre herdar de `BaseEntity` (Id
 
 ## Pendências
 
-- Autenticação/autorização (scaffold comentado em `ApiConfig.cs`)
-- Testes automatizados (infraestrutura existe, não implementada)
-- CORS de produção hardcoded em `localhost:7000` — externalizar para `appsettings.Production.json`
+- Autenticação/autorização (scaffold comentado em `ApiConfig.cs`) — será implementada futuramente por uma API própria
+- Testes de integração para os endpoints (testes de repositório já existem em `RS.Logging.Tests`)
