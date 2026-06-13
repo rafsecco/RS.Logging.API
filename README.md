@@ -20,6 +20,16 @@ docker compose -f docker/docker-compose.yml up --build
 
 Para testar os endpoints, importe a collection do Postman disponível em `postman/`.
 
+## Ingestão de logs
+
+`CreateLog` e `CreateLogProcessDetail` não gravam no banco de forma síncrona: o
+registro é colocado em uma fila em memória (`System.Threading.Channels`) e processado
+por um `BackgroundService`, retornando `202 Accepted` imediatamente. Assim, uma falha
+ou indisponibilidade do banco não derruba a API que está enviando logs.
+
+`CreateLogProcess` continua síncrono e retorna `200 OK` com o `Id` gerado, que é o
+identificador necessário (FK) para os `CreateLogProcessDetail` subsequentes.
+
 ## Padronização dos commits
 
 Seguir o padrão de [Conventional Commits](https://www.conventionalcommits.org/):
@@ -38,9 +48,10 @@ docs:     documentação
 - [X] Projeto de testes
 - [X] Auditoria de processos (status agregado por processo)
 - [X] Upgrade para .NET 10
+- [X] Ingestão assíncrona (fila/background) para não gravar log direto no banco da API
+- [X] CORS de produção configurável via `appsettings.Production.json`
 - [ ] Refatorar
 - [ ] Segurança (autenticação/autorização)
-- [ ] Ingestão assíncrona (fila/background) para não gravar log direto no banco da API
 - [ ] CorrelationId / TraceId
 - [ ] Multi-tenant
 - [ ] Busca full-text

@@ -4,16 +4,20 @@ public static class CorsConfig
 {
 	public static WebApplicationBuilder AddCorsConfig(this WebApplicationBuilder builder)
 	{
+		var allowedOrigins = builder.Configuration
+			.GetSection("Cors:AllowedOrigins")
+			.Get<string[]>() ?? [];
+
 		builder.Services.AddCors(options =>
 		{
-			options.AddPolicy("Development", builder =>
-				builder
+			options.AddPolicy("Development", policy =>
+				policy
 					.AllowAnyOrigin()
 					.AllowAnyMethod()
 					.AllowAnyHeader());
-			options.AddPolicy("Production", builder =>
-				builder
-					.WithOrigins("https://localhost:7000")
+			options.AddPolicy("Production", policy =>
+				policy
+					.WithOrigins(allowedOrigins)
 					.WithMethods("POST", "GET")
 					.AllowAnyHeader());
 		});

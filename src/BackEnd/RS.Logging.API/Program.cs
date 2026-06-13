@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RS.Logging.API.Configurations;
+using RS.Logging.API.Ingestion;
 using RS.Logging.API.ViewModels;
 using RS.Logging.Domain.Log;
 using RS.Logging.Domain.Log.Contracts;
@@ -17,7 +18,8 @@ builder
 	.AddApiConfig()
 	.AddCorsConfig()
 	.AddSwaggerConfig()
-	.AddDbContextConfig();
+	.AddDbContextConfig()
+	.AddIngestionConfig();
 #endregion
 
 var app = builder.Build();
@@ -62,11 +64,17 @@ app.MapGet("/Search/", (
 	return Results.Ok(logList);
 });
 
-app.MapPost("/CreateLog/", ([FromServices] ILogRepository logRepository, [FromBody] LogsViewModel pModel) =>
+app.MapPost("/CreateLog/", ([FromServices] ILogIngestionQueue ingestionQueue, [FromBody] LogsViewModel pModel) =>
 {
 	var log = new Log(pModel.LogLevel, pModel.Message, pModel.StackTrace);
-	var result = logRepository.Create(log);
-	return Results.Ok(result);
+
+	ingestionQueue.Enqueue((services, _) =>
+	{
+		services.GetRequiredService<ILogRepository>().Create(log);
+		return Task.CompletedTask;
+	});
+
+	return Results.Accepted();
 });
 #endregion
 
@@ -126,12 +134,18 @@ app.MapPost("/CreateLogProcess/", (
 });
 
 app.MapPost("/CreateLogProcessDetail/", (
-	[FromServices] ILogProcessRepository logProcessRepository,
+	[FromServices] ILogIngestionQueue ingestionQueue,
 	[FromBody] LogProcessDetailsViewModel pModel) =>
 {
 	var logProcessDetail = new LogProcessDetail(pModel.LogProcessId, pModel.LogLevel, pModel.Message, pModel.StackTrace);
-	var result = logProcessRepository.CreateLogProcessDetail(logProcessDetail);
-	return Results.Ok(result);
+
+	ingestionQueue.Enqueue((services, _) =>
+	{
+		services.GetRequiredService<ILogProcessRepository>().CreateLogProcessDetail(logProcessDetail);
+		return Task.CompletedTask;
+	});
+
+	return Results.Accepted();
 });
 #endregion
 
