@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using RS.Logging.Domain.ApiCall;
 using RS.Logging.Domain.Log;
 using RS.Logging.Domain.LogProcess;
 
@@ -8,6 +9,7 @@ public class RSLoggingDbContext : DbContext
 	public DbSet<Log> Logs { get; set; }
 	public DbSet<LogProcess> LogProcess { get; set; }
 	public DbSet<LogProcessDetail> LogProcessDetails { get; set; }
+	public DbSet<ApiCallLog> ApiCallLogs { get; set; }
 
 	public RSLoggingDbContext(DbContextOptions<RSLoggingDbContext> options) : base(options) { }
 

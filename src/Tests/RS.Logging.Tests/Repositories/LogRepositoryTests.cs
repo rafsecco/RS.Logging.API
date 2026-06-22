@@ -137,6 +137,90 @@ public class LogRepositoryTests
         Assert.Single(result);
     }
 
+    [Fact]
+    public void GetAll_FilterByTenantId_ReturnsOnlyMatchingTenant()
+    {
+        // Arrange
+        using var context = CreateContext();
+        var repository = new LogRepository(context);
+        repository.Create(new Log(LogLevel.Information, "Tenant A log", pTenantId: "tenantA"));
+        repository.Create(new Log(LogLevel.Information, "Tenant B log", pTenantId: "tenantB"));
+
+        // Act
+        var result = repository.GetAll(null, null, tenantId: "tenantA").ToList();
+
+        // Assert
+        Assert.Single(result);
+        Assert.Equal("tenantA", result[0].TenantId);
+    }
+
+    [Fact]
+    public void GetById_DifferentTenant_ReturnsNull()
+    {
+        // Arrange
+        using var context = CreateContext();
+        var repository = new LogRepository(context);
+        var log = new Log(LogLevel.Information, "Tenant A log", pTenantId: "tenantA");
+        repository.Create(log);
+
+        // Act
+        var result = repository.GetById(log.Id, tenantId: "tenantB");
+
+        // Assert
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public void Search_ByTenantId_ReturnsOnlyMatchingTenant()
+    {
+        // Arrange
+        using var context = CreateContext();
+        var repository = new LogRepository(context);
+        repository.Create(new Log(LogLevel.Information, "Tenant A log", pTenantId: "tenantA"));
+        repository.Create(new Log(LogLevel.Information, "Tenant B log", pTenantId: "tenantB"));
+
+        // Act
+        var result = repository.Search(null, null, null, null, null, null, tenantId: "tenantA").ToList();
+
+        // Assert
+        Assert.Single(result);
+        Assert.Equal("tenantA", result[0].TenantId);
+    }
+
+    [Fact]
+    public void Search_ByCorrelationId_ReturnsOnlyMatchingLogs()
+    {
+        // Arrange
+        using var context = CreateContext();
+        var repository = new LogRepository(context);
+        repository.Create(new Log(LogLevel.Information, "Log with correlation", pCorrelationId: "corr-123"));
+        repository.Create(new Log(LogLevel.Information, "Log without correlation"));
+
+        // Act
+        var result = repository.Search(null, null, null, null, null, null, correlationId: "corr-123").ToList();
+
+        // Assert
+        Assert.Single(result);
+        Assert.Equal("corr-123", result[0].CorrelationId);
+    }
+
+    [Fact]
+    public void Search_ByTraceId_ReturnsOnlyMatchingLogs()
+    {
+        // Arrange
+        using var context = CreateContext();
+        var repository = new LogRepository(context);
+        repository.Create(new Log(LogLevel.Information, "Log with trace", pTraceId: "trace-abc"));
+        repository.Create(new Log(LogLevel.Information, "Log without trace"));
+
+        // Act
+        var result = repository.Search(null, null, null, null, null, null, traceId: "trace-abc").ToList();
+
+        // Assert
+        Assert.Single(result);
+        Assert.Equal("trace-abc", result[0].TraceId);
+    }
+
     #endregion
 
     #region Error

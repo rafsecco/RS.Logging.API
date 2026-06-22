@@ -31,9 +31,12 @@ public class LogProcessRepository : ILogProcessRepository
 		return changes > 0;
 	}
 
-	public IEnumerable<LogProcess> GetAll(int? page, int? pageSize)
+	public IEnumerable<LogProcess> GetAll(int? page, int? pageSize, string? tenantId = null)
 	{
 		var query = _logProcessContext.LogProcess.AsNoTracking();
+
+		if (!string.IsNullOrWhiteSpace(tenantId))
+			query = query.Where(p => p.TenantId == tenantId);
 
 		if (page.HasValue && pageSize.HasValue)
 		{
@@ -49,17 +52,24 @@ public class LogProcessRepository : ILogProcessRepository
 		return result;
 	}
 
-	public LogProcess? GetById(ulong id) =>
-		_logProcessContext.LogProcess
-		.Include(x => x.LorProcessDetailList)
-		.FirstOrDefault(p => p.Id == id);
+	public LogProcess? GetById(ulong id, string? tenantId = null)
+	{
+		IQueryable<LogProcess> query = _logProcessContext.LogProcess
+			.Include(x => x.LorProcessDetailList);
+
+		if (!string.IsNullOrWhiteSpace(tenantId))
+			query = query.Where(p => p.TenantId == tenantId);
+
+		return query.FirstOrDefault(p => p.Id == id);
+	}
 
 	public IEnumerable<LogProcess> GetAudit(
 		DateTime? dateTimeStart,
 		DateTime? dateTimeEnd,
 		ProcessStatus? status,
 		int? pageNumber = 1,
-		int? pageSize = 10)
+		int? pageSize = 10,
+		string? tenantId = null)
 	{
 		var query = _logProcessContext.LogProcess
 			.Include(x => x.LorProcessDetailList)
@@ -70,6 +80,9 @@ public class LogProcessRepository : ILogProcessRepository
 
 		if (dateTimeEnd.HasValue)
 			query = query.Where(p => p.CreatedAt <= dateTimeEnd.Value);
+
+		if (!string.IsNullOrWhiteSpace(tenantId))
+			query = query.Where(p => p.TenantId == tenantId);
 
 		query = query.OrderByDescending(o => o.CreatedAt);
 
@@ -93,7 +106,11 @@ public class LogProcessRepository : ILogProcessRepository
 		string? message,
 		string? stackTrace,
 		int? pageNumber = 1,
-		int? pageSize = 10)
+		int? pageSize = 10,
+		string? tenantId = null,
+		string? correlationId = null,
+		string? traceId = null,
+		string? fullTextQuery = null)
 	{
 		IQueryable<LogProcessDetail> query = _logProcessContext.LogProcessDetails.AsNoTracking();
 		query = query.OrderBy(keySelector: o => o.LogProcess.CreatedAt);
@@ -118,6 +135,20 @@ public class LogProcessRepository : ILogProcessRepository
 
 		if (!string.IsNullOrEmpty(stackTrace?.Trim()))
 			query = query.Where(p => p.StackTrace.Contains(stackTrace));
+
+		if (!string.IsNullOrWhiteSpace(tenantId))
+			query = query.Where(p => p.LogProcess.TenantId == tenantId);
+
+		if (!string.IsNullOrWhiteSpace(correlationId))
+			query = query.Where(p => p.CorrelationId == correlationId);
+
+		if (!string.IsNullOrWhiteSpace(traceId))
+			query = query.Where(p => p.TraceId == traceId);
+
+		if (!string.IsNullOrWhiteSpace(fullTextQuery))
+			query = query.Where(p =>
+				EF.Functions.Match(p.Message, fullTextQuery, MySqlMatchSearchMode.NaturalLanguage) > 0 ||
+				(p.StackTrace != null && EF.Functions.Match(p.StackTrace, fullTextQuery, MySqlMatchSearchMode.NaturalLanguage) > 0));
 
 		var skip = (pageNumber.HasValue && pageSize.HasValue)
 			? PaginationHelper.GetSkip(pageNumber.Value, pageSize.Value)

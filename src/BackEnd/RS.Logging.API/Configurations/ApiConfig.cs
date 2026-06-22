@@ -1,8 +1,4 @@
-using Microsoft.EntityFrameworkCore;
-using RS.Logging.Domain.Log.Contracts;
-using RS.Logging.Domain.LogProcess.Contracts;
-using RS.Logging.Infra.Contexts;
-using RS.Logging.Infra.Repositories;
+using Microsoft.AspNetCore.HttpLogging;
 using System.Text.Json.Serialization;
 
 namespace RS.Logging.API.Configurations;
@@ -15,20 +11,25 @@ public static class ApiConfig
 			options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 		builder.Services.AddControllers();
-			//.ConfigureApiBehaviorOptions(options =>
-			//{
-			//	options.SuppressModelStateInvalidFilter = true;
-			//});
+
+		builder.Services.AddHttpLogging(options =>
+		{
+			options.LoggingFields = HttpLoggingFields.RequestMethod
+				| HttpLoggingFields.RequestPath
+				| HttpLoggingFields.RequestQuery
+				| HttpLoggingFields.ResponseStatusCode
+				| HttpLoggingFields.Duration;
+		});
+
 		return builder;
 	}
 
 	public static WebApplication UseApiConfigure(this WebApplication app)
 	{
 		if (app.Environment.IsDevelopment())
-		{
 			app.UseDeveloperExceptionPage();
-		}
 
+		app.UseHttpLogging();
 		app.UseHttpsRedirection();
 		app.UseAuthentication();
 		app.UseAuthorization();

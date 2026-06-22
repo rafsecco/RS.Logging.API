@@ -168,6 +168,110 @@ public class LogProcessRepositoryTests
         Assert.Single(result);
     }
 
+    [Fact]
+    public void GetAll_FilterByTenantId_ReturnsOnlyMatchingTenant()
+    {
+        // Arrange
+        using var context = CreateContext();
+        var repository = new LogProcessRepository(context);
+        repository.CreateLogProcess(new LogProcess(1, "Process A", pTenantId: "tenantA"));
+        repository.CreateLogProcess(new LogProcess(2, "Process B", pTenantId: "tenantB"));
+
+        // Act
+        var result = repository.GetAll(null, null, tenantId: "tenantA").ToList();
+
+        // Assert
+        Assert.Single(result);
+        Assert.Equal("Process A", result[0].Name);
+    }
+
+    [Fact]
+    public void GetById_DifferentTenant_ReturnsNull()
+    {
+        // Arrange
+        using var context = CreateContext();
+        var repository = new LogProcessRepository(context);
+        var processId = repository.CreateLogProcess(new LogProcess(1, "Process A", pTenantId: "tenantA"));
+
+        // Act
+        var result = repository.GetById(processId, tenantId: "tenantB");
+
+        // Assert
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public void GetAudit_FilterByTenantId_ReturnsOnlyMatchingTenant()
+    {
+        // Arrange
+        using var context = CreateContext();
+        var repository = new LogProcessRepository(context);
+        repository.CreateLogProcess(new LogProcess(1, "Process A", pTenantId: "tenantA"));
+        repository.CreateLogProcess(new LogProcess(2, "Process B", pTenantId: "tenantB"));
+
+        // Act
+        var result = repository.GetAudit(null, null, null, null, null, tenantId: "tenantA").ToList();
+
+        // Assert
+        Assert.Single(result);
+        Assert.Equal("Process A", result[0].Name);
+    }
+
+    [Fact]
+    public void Search_ByTenantId_ReturnsOnlyMatchingTenant()
+    {
+        // Arrange
+        using var context = CreateContext();
+        var repository = new LogProcessRepository(context);
+
+        var processAId = repository.CreateLogProcess(new LogProcess(1, "Process A", pTenantId: "tenantA"));
+        repository.CreateLogProcessDetail(new LogProcessDetail(processAId, LogLevel.Information, "Step A"));
+
+        var processBId = repository.CreateLogProcess(new LogProcess(2, "Process B", pTenantId: "tenantB"));
+        repository.CreateLogProcessDetail(new LogProcessDetail(processBId, LogLevel.Information, "Step B"));
+
+        // Act
+        var result = repository.Search(null, null, null, null, null, null, null, null, null, tenantId: "tenantA").ToList();
+
+        // Assert
+        Assert.Single(result);
+        Assert.Equal("Process A", result[0].Name);
+    }
+
+    [Fact]
+    public void Search_ByCorrelationId_ReturnsOnlyMatchingProcess()
+    {
+        // Arrange
+        using var context = CreateContext();
+        var repository = new LogProcessRepository(context);
+        var processId = repository.CreateLogProcess(new LogProcess(1, "Process A"));
+        repository.CreateLogProcessDetail(new LogProcessDetail(processId, LogLevel.Information, "Step 1", pCorrelationId: "corr-123"));
+        repository.CreateLogProcessDetail(new LogProcessDetail(processId, LogLevel.Information, "Step 2"));
+
+        // Act
+        var result = repository.Search(null, null, null, null, null, null, null, null, null, correlationId: "corr-123").ToList();
+
+        // Assert
+        Assert.Single(result);
+    }
+
+    [Fact]
+    public void Search_ByTraceId_ReturnsOnlyMatchingProcess()
+    {
+        // Arrange
+        using var context = CreateContext();
+        var repository = new LogProcessRepository(context);
+        var processId = repository.CreateLogProcess(new LogProcess(1, "Process A"));
+        repository.CreateLogProcessDetail(new LogProcessDetail(processId, LogLevel.Information, "Step 1", pTraceId: "trace-abc"));
+        repository.CreateLogProcessDetail(new LogProcessDetail(processId, LogLevel.Information, "Step 2"));
+
+        // Act
+        var result = repository.Search(null, null, null, null, null, null, null, null, null, traceId: "trace-abc").ToList();
+
+        // Assert
+        Assert.Single(result);
+    }
+
     #endregion
 
     #region Error

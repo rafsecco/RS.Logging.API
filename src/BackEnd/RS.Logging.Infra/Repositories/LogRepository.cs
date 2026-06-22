@@ -23,11 +23,22 @@ public class LogRepository : ILogRepository
 		return changes > 0;
 	}
 
-	public Log? GetById(ulong id) => _logContext.Logs.FirstOrDefault(p => p.Id == id);
+	public Log? GetById(ulong id, string? tenantId = null)
+	{
+		IQueryable<Log> query = _logContext.Logs;
 
-	public IEnumerable<Log> GetAll(int? page, int? pageSize)
+		if (!string.IsNullOrWhiteSpace(tenantId))
+			query = query.Where(p => p.TenantId == tenantId);
+
+		return query.FirstOrDefault(p => p.Id == id);
+	}
+
+	public IEnumerable<Log> GetAll(int? page, int? pageSize, string? tenantId = null)
 	{
 		var query = _logContext.Logs.AsNoTracking();
+
+		if (!string.IsNullOrWhiteSpace(tenantId))
+			query = query.Where(p => p.TenantId == tenantId);
 
 		if (page.HasValue && pageSize.HasValue)
 		{
@@ -43,7 +54,17 @@ public class LogRepository : ILogRepository
 		return result;
 	}
 
-	public IEnumerable<Log> Search(DateTime? dateTimeStart, DateTime? dateTimeEnd, LogLevel? logLevel, string? message, int? pageNumber, int? pageSize)
+	public IEnumerable<Log> Search(
+		DateTime? dateTimeStart,
+		DateTime? dateTimeEnd,
+		LogLevel? logLevel,
+		string? message,
+		int? pageNumber,
+		int? pageSize,
+		string? tenantId = null,
+		string? correlationId = null,
+		string? traceId = null,
+		string? fullTextQuery = null)
 	{
 		IQueryable<Log> query = _logContext.Logs.AsNoTracking();
 		query = query.OrderBy(o => o.CreatedAt);
@@ -66,6 +87,20 @@ public class LogRepository : ILogRepository
 		{
 			query = query.Where(p => p.Message.Contains(message));
 		}
+
+		if (!string.IsNullOrWhiteSpace(tenantId))
+			query = query.Where(p => p.TenantId == tenantId);
+
+		if (!string.IsNullOrWhiteSpace(correlationId))
+			query = query.Where(p => p.CorrelationId == correlationId);
+
+		if (!string.IsNullOrWhiteSpace(traceId))
+			query = query.Where(p => p.TraceId == traceId);
+
+		if (!string.IsNullOrWhiteSpace(fullTextQuery))
+			query = query.Where(p =>
+				EF.Functions.Match(p.Message, fullTextQuery, MySqlMatchSearchMode.NaturalLanguage) > 0 ||
+				(p.StackTrace != null && EF.Functions.Match(p.StackTrace, fullTextQuery, MySqlMatchSearchMode.NaturalLanguage) > 0));
 
 		if (pageNumber is not null && pageSize is not null)
 		{

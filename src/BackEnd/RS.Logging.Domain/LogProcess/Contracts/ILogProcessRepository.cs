@@ -8,9 +8,9 @@ public interface ILogProcessRepository
 
 	bool CreateLogProcessDetail(LogProcessDetail logProcessDetails);
 
-	IEnumerable<LogProcess> GetAll(int? page, int? pageSize);
+	IEnumerable<LogProcess> GetAll(int? page, int? pageSize, string? tenantId = null);
 
-	LogProcess? GetById(ulong id);
+	LogProcess? GetById(ulong id, string? tenantId = null);
 
 	IEnumerable<LogProcess> Search(
 		DateTime? dateTimeStart,
@@ -21,7 +21,11 @@ public interface ILogProcessRepository
 		string? message,
 		string? stackTrace,
 		int? pageNumber,
-		int? pageSize
+		int? pageSize,
+		string? tenantId = null,
+		string? correlationId = null,
+		string? traceId = null,
+		string? fullTextQuery = null
 	);
 
 	IEnumerable<LogProcess> GetAudit(
@@ -29,6 +33,7 @@ public interface ILogProcessRepository
 		DateTime? dateTimeEnd,
 		ProcessStatus? status,
 		int? pageNumber,
-		int? pageSize
+		int? pageSize,
+		string? tenantId = null
 	);
 }

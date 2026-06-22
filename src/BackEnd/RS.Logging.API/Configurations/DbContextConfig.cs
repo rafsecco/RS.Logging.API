@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using RS.Logging.Domain.ApiCall.Contracts;
 using RS.Logging.Domain.Log.Contracts;
 using RS.Logging.Domain.LogProcess.Contracts;
 using RS.Logging.Infra.Contexts;
@@ -29,6 +30,7 @@ public static class DbContextConfig
 
 		builder.Services.AddTransient<ILogRepository, LogRepository>();
 		builder.Services.AddTransient<ILogProcessRepository, LogProcessRepository>();
+		builder.Services.AddTransient<IApiCallLogRepository, ApiCallLogRepository>();
 
 		return builder;
 	}

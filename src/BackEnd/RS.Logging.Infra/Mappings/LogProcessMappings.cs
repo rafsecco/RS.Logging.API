@@ -34,9 +34,30 @@ internal class LogProcessMappings : IEntityTypeConfiguration<LogProcess>
 			.HasColumnType("VARCHAR")
 			.HasMaxLength(255);
 
+		builder.Property(p => p.TenantId)
+			.HasColumnName("ds_TenantId")
+			.HasColumnOrder(5)
+			.HasColumnType("VARCHAR")
+			.HasMaxLength(100);
+
+		builder.Property(p => p.CorrelationId)
+			.HasColumnName("ds_CorrelationId")
+			.HasColumnOrder(6)
+			.HasColumnType("VARCHAR")
+			.HasMaxLength(64);
+
+		builder.Property(p => p.TraceId)
+			.HasColumnName("ds_TraceId")
+			.HasColumnOrder(7)
+			.HasColumnType("VARCHAR")
+			.HasMaxLength(64);
+
 		// Index
 		builder.HasIndex(i => i.CreatedAt, "IDX-TB_LogProcess_dt_CreatedAt");
 		builder.HasIndex(i => new { i.CreatedAt, i.ProcessId }, "IDX-TB_LogProcess_dt_CreatedAt-id_Process");
+		builder.HasIndex(i => i.TenantId, "IDX-TB_LogProcess_ds_TenantId");
+		builder.HasIndex(i => i.CorrelationId, "IDX-TB_LogProcess_ds_CorrelationId");
+		builder.HasIndex(i => i.TraceId, "IDX-TB_LogProcess_ds_TraceId");
 
 		// Relationship
 		builder

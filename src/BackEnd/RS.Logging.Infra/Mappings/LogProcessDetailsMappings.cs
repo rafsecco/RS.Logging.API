@@ -42,12 +42,29 @@ internal class LogProcessDetailsMappings : IEntityTypeConfiguration<LogProcessDe
 
 		builder.Property(p => p.StackTrace)
 			.HasColumnName("ds_StackTrace")
-			.HasColumnOrder(6);
-		//.HasColumnType("VARCHAR");
+			.HasColumnOrder(6)
+			.HasColumnType("LONGTEXT");
+
+		builder.Property(p => p.CorrelationId)
+			.HasColumnName("ds_CorrelationId")
+			.HasColumnOrder(7)
+			.HasColumnType("VARCHAR")
+			.HasMaxLength(64);
+
+		builder.Property(p => p.TraceId)
+			.HasColumnName("ds_TraceId")
+			.HasColumnOrder(8)
+			.HasColumnType("VARCHAR")
+			.HasMaxLength(64);
 
 		// Index
 		builder.HasIndex(i => i.CreatedAt, "idx-TB_LogProcess_dt_CreatedAt");
 		builder.HasIndex(i => new { i.CreatedAt, i.LogProcessId }, "idx-TB_LogProcessDetail_dt_CreatedAt-cd_Process");
+		builder.HasIndex(i => i.CorrelationId, "idx-TB_LogProcessDetail_ds_CorrelationId");
+		builder.HasIndex(i => i.TraceId, "idx-TB_LogProcessDetail_ds_TraceId");
+
+		builder.HasIndex(i => i.Message, "ft_TB_LogProcessDetail_ds_Message").IsFullText();
+		builder.HasIndex(i => i.StackTrace, "ft_TB_LogProcessDetail_ds_StackTrace").IsFullText();
 
 		// Relationship
 		builder

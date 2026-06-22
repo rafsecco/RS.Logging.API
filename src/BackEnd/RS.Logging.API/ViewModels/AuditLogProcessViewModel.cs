@@ -8,6 +8,8 @@ public record AuditLogProcessDetailViewModel(
     LogLevel LogLevel,
     string Message,
     string? StackTrace,
+    string? CorrelationId,
+    string? TraceId,
     DateTime CreatedAt
 );
 
@@ -15,6 +17,9 @@ public record AuditLogProcessViewModel(
     ulong Id,
     uint ProcessId,
     string? Name,
+    string? TenantId,
+    string? CorrelationId,
+    string? TraceId,
     DateTime CreatedAt,
     ProcessStatus Status,
     IEnumerable<AuditLogProcessDetailViewModel> Details
@@ -25,6 +30,9 @@ public record AuditLogProcessViewModel(
             process.Id,
             process.ProcessId,
             process.Name,
+            process.TenantId,
+            process.CorrelationId,
+            process.TraceId,
             process.CreatedAt,
             process.GetStatus(),
             process.LorProcessDetailList?.Select(d => new AuditLogProcessDetailViewModel(
@@ -32,6 +40,8 @@ public record AuditLogProcessViewModel(
                 d.LogLevel,
                 d.Message,
                 d.StackTrace,
+                d.CorrelationId,
+                d.TraceId,
                 d.CreatedAt
             )) ?? []
         );
