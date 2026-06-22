@@ -2,17 +2,18 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RS.Logging.Infra.Contexts;
 
 #nullable disable
 
-namespace RS.Logging.Infra.Migrations
+namespace RS.Logging.Infra.Migrations.MariaDB
 {
     [DbContext(typeof(RSLoggingDbContext))]
-    [Migration("20231028165753_updateClass")]
-    partial class updateClass
+    [Migration("20260614125641_AddTenantCorrelationTraceFullText")]
+    partial class AddTenantCorrelationTraceFullText
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,8 +21,10 @@ namespace RS.Logging.Infra.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .UseCollation("utf8_general_ci")
-                .HasAnnotation("ProductVersion", "7.0.11")
+                .HasAnnotation("ProductVersion", "9.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
             modelBuilder.Entity("RS.Logging.Domain.Log.Log", b =>
                 {
@@ -30,6 +33,14 @@ namespace RS.Logging.Infra.Migrations
                         .HasColumnType("BIGINT UNSIGNED")
                         .HasColumnName("id_Log")
                         .HasColumnOrder(1);
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<ulong>("Id"));
+
+                    b.Property<string>("CorrelationId")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("ds_CorrelationId")
+                        .HasColumnOrder(7);
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -51,11 +62,35 @@ namespace RS.Logging.Infra.Migrations
                         .HasColumnOrder(4);
 
                     b.Property<string>("StackTrace")
-                        .HasColumnType("longtext")
+                        .HasColumnType("LONGTEXT")
                         .HasColumnName("ds_StackTrace")
                         .HasColumnOrder(5);
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("ds_TenantId")
+                        .HasColumnOrder(6);
+
+                    b.Property<string>("TraceId")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("ds_TraceId")
+                        .HasColumnOrder(8);
+
                     b.HasKey("Id");
+
+                    b.HasIndex(new[] { "Message" }, "ft_TB_Log_ds_Message")
+                        .HasAnnotation("MySql:FullTextIndex", true);
+
+                    b.HasIndex(new[] { "StackTrace" }, "ft_TB_Log_ds_StackTrace")
+                        .HasAnnotation("MySql:FullTextIndex", true);
+
+                    b.HasIndex(new[] { "CorrelationId" }, "idx_TB_Log_ds_CorrelationId");
+
+                    b.HasIndex(new[] { "TenantId" }, "idx_TB_Log_ds_TenantId");
+
+                    b.HasIndex(new[] { "TraceId" }, "idx_TB_Log_ds_TraceId");
 
                     b.HasIndex(new[] { "CreatedAt" }, "idx_TB_Log_dt_CreatedAt");
 
@@ -71,6 +106,14 @@ namespace RS.Logging.Infra.Migrations
                         .HasColumnType("BIGINT UNSIGNED")
                         .HasColumnName("id_LogProcess")
                         .HasColumnOrder(1);
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<ulong>("Id"));
+
+                    b.Property<string>("CorrelationId")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("ds_CorrelationId")
+                        .HasColumnOrder(6);
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -90,11 +133,29 @@ namespace RS.Logging.Infra.Migrations
                         .HasColumnName("id_Process")
                         .HasColumnOrder(2);
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("ds_TenantId")
+                        .HasColumnOrder(5);
+
+                    b.Property<string>("TraceId")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("ds_TraceId")
+                        .HasColumnOrder(7);
+
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "CreatedAt" }, "idx-TB_LogProcess_dt_CreatedAt");
+                    b.HasIndex(new[] { "CorrelationId" }, "IDX-TB_LogProcess_ds_CorrelationId");
 
-                    b.HasIndex(new[] { "CreatedAt", "ProcessId" }, "idx-TB_LogProcess_dt_CreatedAt-id_Process");
+                    b.HasIndex(new[] { "TenantId" }, "IDX-TB_LogProcess_ds_TenantId");
+
+                    b.HasIndex(new[] { "TraceId" }, "IDX-TB_LogProcess_ds_TraceId");
+
+                    b.HasIndex(new[] { "CreatedAt" }, "IDX-TB_LogProcess_dt_CreatedAt");
+
+                    b.HasIndex(new[] { "CreatedAt", "ProcessId" }, "IDX-TB_LogProcess_dt_CreatedAt-id_Process");
 
                     b.ToTable("TB_LogProcess", (string)null);
                 });
@@ -106,6 +167,14 @@ namespace RS.Logging.Infra.Migrations
                         .HasColumnType("BIGINT UNSIGNED")
                         .HasColumnName("id_LogProcessDetails")
                         .HasColumnOrder(1);
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<ulong>("Id"));
+
+                    b.Property<string>("CorrelationId")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("ds_CorrelationId")
+                        .HasColumnOrder(7);
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -132,18 +201,33 @@ namespace RS.Logging.Infra.Migrations
                         .HasColumnOrder(5);
 
                     b.Property<string>("StackTrace")
-                        .HasColumnType("longtext")
+                        .HasColumnType("LONGTEXT")
                         .HasColumnName("ds_StackTrace")
                         .HasColumnOrder(6);
+
+                    b.Property<string>("TraceId")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("ds_TraceId")
+                        .HasColumnOrder(8);
 
                     b.HasKey("Id");
 
                     b.HasIndex("LogProcessId");
 
+                    b.HasIndex(new[] { "Message" }, "ft_TB_LogProcessDetail_ds_Message")
+                        .HasAnnotation("MySql:FullTextIndex", true);
+
+                    b.HasIndex(new[] { "StackTrace" }, "ft_TB_LogProcessDetail_ds_StackTrace")
+                        .HasAnnotation("MySql:FullTextIndex", true);
+
+                    b.HasIndex(new[] { "CorrelationId" }, "idx-TB_LogProcessDetail_ds_CorrelationId");
+
+                    b.HasIndex(new[] { "TraceId" }, "idx-TB_LogProcessDetail_ds_TraceId");
+
                     b.HasIndex(new[] { "CreatedAt", "LogProcessId" }, "idx-TB_LogProcessDetail_dt_CreatedAt-cd_Process");
 
-                    b.HasIndex(new[] { "CreatedAt" }, "idx-TB_LogProcess_dt_CreatedAt")
-                        .HasDatabaseName("idx-TB_LogProcess_dt_CreatedAt1");
+                    b.HasIndex(new[] { "CreatedAt" }, "idx-TB_LogProcess_dt_CreatedAt");
 
                     b.ToTable("TB_LogProcessDetail", (string)null);
                 });
@@ -154,7 +238,8 @@ namespace RS.Logging.Infra.Migrations
                         .WithMany("LorProcessDetailList")
                         .HasForeignKey("LogProcessId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK-TB_LogProcessDetail_cd_Process-TB_LogProcess_id_LogProcess");
 
                     b.Navigation("LogProcess");
                 });

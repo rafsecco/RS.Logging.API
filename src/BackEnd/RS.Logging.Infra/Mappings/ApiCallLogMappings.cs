@@ -1,11 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RS.Logging.Domain.ApiCall;
+using RS.Logging.Infra.Providers;
 
 namespace RS.Logging.Infra.Mappings;
 
 internal class ApiCallLogMappings : IEntityTypeConfiguration<ApiCallLog>
 {
+    private readonly IDbColumnTypes _t;
+    public ApiCallLogMappings(IDbColumnTypes t) => _t = t;
+
     public void Configure(EntityTypeBuilder<ApiCallLog> builder)
     {
         builder.ToTable("TB_ApiCallLog");
@@ -15,13 +19,13 @@ internal class ApiCallLogMappings : IEntityTypeConfiguration<ApiCallLog>
         builder.Property(p => p.Id)
             .HasColumnName("id_ApiCallLog")
             .HasColumnOrder(1)
-            .HasColumnType("BIGINT UNSIGNED")
+            .HasColumnType(_t.BigInt)
             .ValueGeneratedOnAdd();
 
         builder.Property(p => p.CreatedAt)
             .HasColumnName("dt_CreatedAt")
             .HasColumnOrder(2)
-            .HasDefaultValueSql("NOW()");
+            .HasDefaultValueSql(_t.NowSql);
 
         builder.Property(p => p.IsSuccess)
             .HasColumnName("fl_IsSuccess")
@@ -30,7 +34,7 @@ internal class ApiCallLogMappings : IEntityTypeConfiguration<ApiCallLog>
         builder.Property(p => p.HttpMethod)
             .HasColumnName("ds_HttpMethod")
             .HasColumnOrder(4)
-            .HasColumnType("VARCHAR")
+            .HasColumnType(_t.VarChar)
             .HasMaxLength(10);
 
         builder.Property(p => p.ResponseStatusCode)
@@ -44,44 +48,44 @@ internal class ApiCallLogMappings : IEntityTypeConfiguration<ApiCallLog>
         builder.Property(p => p.Url)
             .HasColumnName("ds_Url")
             .HasColumnOrder(7)
-            .HasColumnType("LONGTEXT");
+            .HasColumnType(_t.LongText);
 
         builder.Property(p => p.RequestBody)
             .HasColumnName("ds_RequestBody")
             .HasColumnOrder(8)
-            .HasColumnType("LONGTEXT");
+            .HasColumnType(_t.LongText);
 
         builder.Property(p => p.RequestHeaders)
             .HasColumnName("ds_RequestHeaders")
             .HasColumnOrder(9)
-            .HasColumnType("LONGTEXT");
+            .HasColumnType(_t.LongText);
 
         builder.Property(p => p.ResponseBody)
             .HasColumnName("ds_ResponseBody")
             .HasColumnOrder(10)
-            .HasColumnType("LONGTEXT");
+            .HasColumnType(_t.LongText);
 
         builder.Property(p => p.ErrorMessage)
             .HasColumnName("ds_ErrorMessage")
             .HasColumnOrder(11)
-            .HasColumnType("LONGTEXT");
+            .HasColumnType(_t.LongText);
 
         builder.Property(p => p.TenantId)
             .HasColumnName("ds_TenantId")
             .HasColumnOrder(12)
-            .HasColumnType("VARCHAR")
+            .HasColumnType(_t.VarChar)
             .HasMaxLength(100);
 
         builder.Property(p => p.CorrelationId)
             .HasColumnName("ds_CorrelationId")
             .HasColumnOrder(13)
-            .HasColumnType("VARCHAR")
+            .HasColumnType(_t.VarChar)
             .HasMaxLength(64);
 
         builder.Property(p => p.TraceId)
             .HasColumnName("ds_TraceId")
             .HasColumnOrder(14)
-            .HasColumnType("VARCHAR")
+            .HasColumnType(_t.VarChar)
             .HasMaxLength(64);
 
         builder.HasIndex(i => i.CreatedAt, "idx_TB_ApiCallLog_dt_CreatedAt");

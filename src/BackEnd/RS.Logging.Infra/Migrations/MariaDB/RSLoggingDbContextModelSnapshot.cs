@@ -3,20 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RS.Logging.Infra.Contexts;
 
 #nullable disable
 
-namespace RS.Logging.Infra.Migrations
+namespace RS.Logging.Infra.Migrations.MariaDB
 {
     [DbContext(typeof(RSLoggingDbContext))]
-    [Migration("20260614125641_AddTenantCorrelationTraceFullText")]
-    partial class AddTenantCorrelationTraceFullText
+    partial class RSLoggingDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,6 +22,106 @@ namespace RS.Logging.Infra.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+
+            modelBuilder.Entity("RS.Logging.Domain.ApiCall.ApiCallLog", b =>
+                {
+                    b.Property<ulong>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("BIGINT UNSIGNED")
+                        .HasColumnName("id_ApiCallLog")
+                        .HasColumnOrder(1);
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<ulong>("Id"));
+
+                    b.Property<string>("CorrelationId")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("ds_CorrelationId")
+                        .HasColumnOrder(13);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("dt_CreatedAt")
+                        .HasColumnOrder(2)
+                        .HasDefaultValueSql("NOW()");
+
+                    b.Property<long?>("DurationMs")
+                        .HasColumnType("bigint")
+                        .HasColumnName("nr_DurationMs")
+                        .HasColumnOrder(6);
+
+                    b.Property<string>("ErrorMessage")
+                        .HasColumnType("LONGTEXT")
+                        .HasColumnName("ds_ErrorMessage")
+                        .HasColumnOrder(11);
+
+                    b.Property<string>("HttpMethod")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("ds_HttpMethod")
+                        .HasColumnOrder(4);
+
+                    b.Property<bool>("IsSuccess")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("fl_IsSuccess")
+                        .HasColumnOrder(3);
+
+                    b.Property<string>("RequestBody")
+                        .HasColumnType("LONGTEXT")
+                        .HasColumnName("ds_RequestBody")
+                        .HasColumnOrder(8);
+
+                    b.Property<string>("RequestHeaders")
+                        .HasColumnType("LONGTEXT")
+                        .HasColumnName("ds_RequestHeaders")
+                        .HasColumnOrder(9);
+
+                    b.Property<string>("ResponseBody")
+                        .HasColumnType("LONGTEXT")
+                        .HasColumnName("ds_ResponseBody")
+                        .HasColumnOrder(10);
+
+                    b.Property<int?>("ResponseStatusCode")
+                        .HasColumnType("int")
+                        .HasColumnName("nr_ResponseStatusCode")
+                        .HasColumnOrder(5);
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("ds_TenantId")
+                        .HasColumnOrder(12);
+
+                    b.Property<string>("TraceId")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("ds_TraceId")
+                        .HasColumnOrder(14);
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("LONGTEXT")
+                        .HasColumnName("ds_Url")
+                        .HasColumnOrder(7);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "CorrelationId" }, "idx_TB_ApiCallLog_ds_CorrelationId");
+
+                    b.HasIndex(new[] { "TenantId" }, "idx_TB_ApiCallLog_ds_TenantId");
+
+                    b.HasIndex(new[] { "TraceId" }, "idx_TB_ApiCallLog_ds_TraceId");
+
+                    b.HasIndex(new[] { "CreatedAt" }, "idx_TB_ApiCallLog_dt_CreatedAt");
+
+                    b.HasIndex(new[] { "IsSuccess" }, "idx_TB_ApiCallLog_fl_IsSuccess");
+
+                    b.HasIndex(new[] { "ResponseStatusCode" }, "idx_TB_ApiCallLog_nr_ResponseStatusCode");
+
+                    b.ToTable("TB_ApiCallLog", (string)null);
+                });
 
             modelBuilder.Entity("RS.Logging.Domain.Log.Log", b =>
                 {

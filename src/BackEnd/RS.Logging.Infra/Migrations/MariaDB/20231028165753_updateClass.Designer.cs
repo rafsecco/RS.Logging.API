@@ -8,11 +8,11 @@ using RS.Logging.Infra.Contexts;
 
 #nullable disable
 
-namespace RS.Logging.Infra.Migrations
+namespace RS.Logging.Infra.Migrations.MariaDB
 {
     [DbContext(typeof(RSLoggingDbContext))]
-    [Migration("20231028132620_LogProcess")]
-    partial class LogProcess
+    [Migration("20231028165753_updateClass")]
+    partial class updateClass
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -99,7 +99,7 @@ namespace RS.Logging.Infra.Migrations
                     b.ToTable("TB_LogProcess", (string)null);
                 });
 
-            modelBuilder.Entity("RS.Logging.Domain.LogProcess.LogProcessDetails", b =>
+            modelBuilder.Entity("RS.Logging.Domain.LogProcess.LogProcessDetail", b =>
                 {
                     b.Property<ulong>("Id")
                         .ValueGeneratedOnAdd()
@@ -148,7 +148,7 @@ namespace RS.Logging.Infra.Migrations
                     b.ToTable("TB_LogProcessDetail", (string)null);
                 });
 
-            modelBuilder.Entity("RS.Logging.Domain.LogProcess.LogProcessDetails", b =>
+            modelBuilder.Entity("RS.Logging.Domain.LogProcess.LogProcessDetail", b =>
                 {
                     b.HasOne("RS.Logging.Domain.LogProcess.LogProcess", "LogProcess")
                         .WithMany("LorProcessDetailList")

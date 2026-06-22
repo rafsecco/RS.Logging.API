@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RS.Logging.Infra.Contexts;
 
 #nullable disable
 
-namespace RS.Logging.Infra.Migrations
+namespace RS.Logging.Infra.Migrations.MariaDB
 {
     [DbContext(typeof(RSLoggingDbContext))]
-    partial class RSLoggingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260622103622_AddApiCallLog")]
+    partial class AddApiCallLog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

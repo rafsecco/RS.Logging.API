@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RS.Logging.Domain.LogProcess;
 using RS.Logging.Infra.Contexts;
+using RS.Logging.Infra.Providers;
 using RS.Logging.Infra.Repositories;
 using Xunit;
 
@@ -12,7 +13,10 @@ public class LogProcessRepositoryTests
     private static RSLoggingDbContext CreateContext() =>
         new(new DbContextOptionsBuilder<RSLoggingDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options);
+            .Options, new MariaDbColumnTypes());
+
+    private static LogProcessRepository Repo(RSLoggingDbContext ctx) =>
+        new(ctx, new LikeFullTextProvider());
 
     #region Success
 
@@ -21,7 +25,7 @@ public class LogProcessRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogProcessRepository(context);
+        var repository = Repo(context);
         var process = new LogProcess(1, "Payment Process");
 
         // Act
@@ -36,7 +40,7 @@ public class LogProcessRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogProcessRepository(context);
+        var repository = Repo(context);
         var processId = repository.CreateLogProcess(new LogProcess(1, "Payment Process"));
         var detail = new LogProcessDetail(processId, LogLevel.Information, "Step 1 completed");
 
@@ -52,7 +56,7 @@ public class LogProcessRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogProcessRepository(context);
+        var repository = Repo(context);
         var processId = repository.CreateLogProcess(new LogProcess(1, "Order Process"));
         repository.CreateLogProcessDetail(new LogProcessDetail(processId, LogLevel.Information, "Step 1: validate"));
         repository.CreateLogProcessDetail(new LogProcessDetail(processId, LogLevel.Information, "Step 2: persist"));
@@ -72,7 +76,7 @@ public class LogProcessRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogProcessRepository(context);
+        var repository = Repo(context);
         repository.CreateLogProcess(new LogProcess(1, "Process A"));
         repository.CreateLogProcess(new LogProcess(2, "Process B"));
         repository.CreateLogProcess(new LogProcess(3, "Process C"));
@@ -89,7 +93,7 @@ public class LogProcessRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogProcessRepository(context);
+        var repository = Repo(context);
 
         var successId = repository.CreateLogProcess(new LogProcess(1, "Success Process"));
         repository.CreateLogProcessDetail(new LogProcessDetail(successId, LogLevel.Information, "All good"));
@@ -111,7 +115,7 @@ public class LogProcessRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogProcessRepository(context);
+        var repository = Repo(context);
 
         var successId = repository.CreateLogProcess(new LogProcess(1, "Success Process"));
         repository.CreateLogProcessDetail(new LogProcessDetail(successId, LogLevel.Information, "Step completed"));
@@ -133,7 +137,7 @@ public class LogProcessRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogProcessRepository(context);
+        var repository = Repo(context);
 
         var successId = repository.CreateLogProcess(new LogProcess(1, "Success Process"));
         repository.CreateLogProcessDetail(new LogProcessDetail(successId, LogLevel.Information, "Completed"));
@@ -155,7 +159,7 @@ public class LogProcessRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogProcessRepository(context);
+        var repository = Repo(context);
         repository.CreateLogProcess(new LogProcess(1, "Recent Process"));
 
         var dateStart = DateTime.Now.AddMinutes(-1);
@@ -173,7 +177,7 @@ public class LogProcessRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogProcessRepository(context);
+        var repository = Repo(context);
         repository.CreateLogProcess(new LogProcess(1, "Process A", pTenantId: "tenantA"));
         repository.CreateLogProcess(new LogProcess(2, "Process B", pTenantId: "tenantB"));
 
@@ -190,7 +194,7 @@ public class LogProcessRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogProcessRepository(context);
+        var repository = Repo(context);
         var processId = repository.CreateLogProcess(new LogProcess(1, "Process A", pTenantId: "tenantA"));
 
         // Act
@@ -205,7 +209,7 @@ public class LogProcessRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogProcessRepository(context);
+        var repository = Repo(context);
         repository.CreateLogProcess(new LogProcess(1, "Process A", pTenantId: "tenantA"));
         repository.CreateLogProcess(new LogProcess(2, "Process B", pTenantId: "tenantB"));
 
@@ -222,7 +226,7 @@ public class LogProcessRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogProcessRepository(context);
+        var repository = Repo(context);
 
         var processAId = repository.CreateLogProcess(new LogProcess(1, "Process A", pTenantId: "tenantA"));
         repository.CreateLogProcessDetail(new LogProcessDetail(processAId, LogLevel.Information, "Step A"));
@@ -243,7 +247,7 @@ public class LogProcessRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogProcessRepository(context);
+        var repository = Repo(context);
         var processId = repository.CreateLogProcess(new LogProcess(1, "Process A"));
         repository.CreateLogProcessDetail(new LogProcessDetail(processId, LogLevel.Information, "Step 1", pCorrelationId: "corr-123"));
         repository.CreateLogProcessDetail(new LogProcessDetail(processId, LogLevel.Information, "Step 2"));
@@ -260,7 +264,7 @@ public class LogProcessRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogProcessRepository(context);
+        var repository = Repo(context);
         var processId = repository.CreateLogProcess(new LogProcess(1, "Process A"));
         repository.CreateLogProcessDetail(new LogProcessDetail(processId, LogLevel.Information, "Step 1", pTraceId: "trace-abc"));
         repository.CreateLogProcessDetail(new LogProcessDetail(processId, LogLevel.Information, "Step 2"));
@@ -281,7 +285,7 @@ public class LogProcessRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogProcessRepository(context);
+        var repository = Repo(context);
 
         // Act
         var result = repository.GetById(99999);
@@ -295,7 +299,7 @@ public class LogProcessRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogProcessRepository(context);
+        var repository = Repo(context);
 
         // Act
         var result = repository.GetAll(null, null).ToList();
@@ -309,7 +313,7 @@ public class LogProcessRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogProcessRepository(context);
+        var repository = Repo(context);
 
         var successId = repository.CreateLogProcess(new LogProcess(1, "Success Process"));
         repository.CreateLogProcessDetail(new LogProcessDetail(successId, LogLevel.Information, "All good"));
@@ -326,7 +330,7 @@ public class LogProcessRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogProcessRepository(context);
+        var repository = Repo(context);
         repository.CreateLogProcess(new LogProcess(1, "Old Process"));
 
         var dateStart = DateTime.Now.AddDays(1);
@@ -344,7 +348,7 @@ public class LogProcessRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogProcessRepository(context);
+        var repository = Repo(context);
         var processId = repository.CreateLogProcess(new LogProcess(1, "Order Processing"));
         repository.CreateLogProcessDetail(new LogProcessDetail(processId, LogLevel.Information, "Step 1: order received"));
         repository.CreateLogProcessDetail(new LogProcessDetail(processId, LogLevel.Information, "Step 2: payment validated"));

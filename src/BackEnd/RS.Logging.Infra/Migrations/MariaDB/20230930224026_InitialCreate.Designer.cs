@@ -8,7 +8,7 @@ using RS.Logging.Infra.Contexts;
 
 #nullable disable
 
-namespace RS.Logging.Infra.Migrations
+namespace RS.Logging.Infra.Migrations.MariaDB
 {
     [DbContext(typeof(RSLoggingDbContext))]
     [Migration("20230930224026_InitialCreate")]

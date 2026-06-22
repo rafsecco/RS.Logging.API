@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RS.Logging.Domain.Log;
 using RS.Logging.Infra.Contexts;
+using RS.Logging.Infra.Providers;
 using RS.Logging.Infra.Repositories;
 using Xunit;
 
@@ -12,7 +13,10 @@ public class LogRepositoryTests
     private static RSLoggingDbContext CreateContext() =>
         new(new DbContextOptionsBuilder<RSLoggingDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options);
+            .Options, new MariaDbColumnTypes());
+
+    private static LogRepository Repo(RSLoggingDbContext ctx) =>
+        new(ctx, new LikeFullTextProvider());
 
     #region Success
 
@@ -21,7 +25,7 @@ public class LogRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogRepository(context);
+        var repository = Repo(context);
         var log = new Log(LogLevel.Information, "Application started");
 
         // Act
@@ -36,7 +40,7 @@ public class LogRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogRepository(context);
+        var repository = Repo(context);
         var log = new Log(LogLevel.Information, "Application started");
 
         // Act
@@ -53,7 +57,7 @@ public class LogRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogRepository(context);
+        var repository = Repo(context);
         var log = new Log(LogLevel.Warning, "Disk usage high");
         repository.Create(log);
 
@@ -71,7 +75,7 @@ public class LogRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogRepository(context);
+        var repository = Repo(context);
         repository.Create(new Log(LogLevel.Information, "Log 1"));
         repository.Create(new Log(LogLevel.Information, "Log 2"));
         repository.Create(new Log(LogLevel.Information, "Log 3"));
@@ -88,7 +92,7 @@ public class LogRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogRepository(context);
+        var repository = Repo(context);
         repository.Create(new Log(LogLevel.Information, "Info log"));
         repository.Create(new Log(LogLevel.Error, "Error log 1"));
         repository.Create(new Log(LogLevel.Error, "Error log 2"));
@@ -106,7 +110,7 @@ public class LogRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogRepository(context);
+        var repository = Repo(context);
         repository.Create(new Log(LogLevel.Error, "NullReferenceException in PaymentService"));
         repository.Create(new Log(LogLevel.Error, "Timeout in OrderService"));
         repository.Create(new Log(LogLevel.Information, "Request completed"));
@@ -124,7 +128,7 @@ public class LogRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogRepository(context);
+        var repository = Repo(context);
         repository.Create(new Log(LogLevel.Information, "Recent log"));
 
         var dateStart = DateTime.Now.AddMinutes(-1);
@@ -142,7 +146,7 @@ public class LogRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogRepository(context);
+        var repository = Repo(context);
         repository.Create(new Log(LogLevel.Information, "Tenant A log", pTenantId: "tenantA"));
         repository.Create(new Log(LogLevel.Information, "Tenant B log", pTenantId: "tenantB"));
 
@@ -159,7 +163,7 @@ public class LogRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogRepository(context);
+        var repository = Repo(context);
         var log = new Log(LogLevel.Information, "Tenant A log", pTenantId: "tenantA");
         repository.Create(log);
 
@@ -175,7 +179,7 @@ public class LogRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogRepository(context);
+        var repository = Repo(context);
         repository.Create(new Log(LogLevel.Information, "Tenant A log", pTenantId: "tenantA"));
         repository.Create(new Log(LogLevel.Information, "Tenant B log", pTenantId: "tenantB"));
 
@@ -192,7 +196,7 @@ public class LogRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogRepository(context);
+        var repository = Repo(context);
         repository.Create(new Log(LogLevel.Information, "Log with correlation", pCorrelationId: "corr-123"));
         repository.Create(new Log(LogLevel.Information, "Log without correlation"));
 
@@ -209,7 +213,7 @@ public class LogRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogRepository(context);
+        var repository = Repo(context);
         repository.Create(new Log(LogLevel.Information, "Log with trace", pTraceId: "trace-abc"));
         repository.Create(new Log(LogLevel.Information, "Log without trace"));
 
@@ -230,7 +234,7 @@ public class LogRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogRepository(context);
+        var repository = Repo(context);
 
         // Act
         var result = repository.GetById(99999);
@@ -244,7 +248,7 @@ public class LogRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogRepository(context);
+        var repository = Repo(context);
 
         // Act
         var result = repository.GetAll(null, null).ToList();
@@ -258,7 +262,7 @@ public class LogRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogRepository(context);
+        var repository = Repo(context);
         repository.Create(new Log(LogLevel.Information, "Hello world"));
 
         // Act
@@ -273,7 +277,7 @@ public class LogRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogRepository(context);
+        var repository = Repo(context);
         repository.Create(new Log(LogLevel.Information, "Past log"));
 
         var dateStart = DateTime.Now.AddDays(1);
@@ -291,7 +295,7 @@ public class LogRepositoryTests
     {
         // Arrange
         using var context = CreateContext();
-        var repository = new LogRepository(context);
+        var repository = Repo(context);
         repository.Create(new Log(LogLevel.Information, "Info log"));
 
         // Act

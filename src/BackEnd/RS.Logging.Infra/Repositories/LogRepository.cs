@@ -4,111 +4,106 @@ using RS.Core.Pagination;
 using RS.Logging.Domain.Log;
 using RS.Logging.Domain.Log.Contracts;
 using RS.Logging.Infra.Contexts;
+using RS.Logging.Infra.Providers;
 
 namespace RS.Logging.Infra.Repositories;
 
 public class LogRepository : ILogRepository
 {
-	private readonly RSLoggingDbContext _logContext;
+    private readonly RSLoggingDbContext _logContext;
+    private readonly IFullTextSearchProvider _fullText;
 
-	public LogRepository(RSLoggingDbContext logContext)
-	{
-		_logContext = logContext;
-	}
+    public LogRepository(RSLoggingDbContext logContext, IFullTextSearchProvider fullText)
+    {
+        _logContext = logContext;
+        _fullText = fullText;
+    }
 
-	public bool Create(Log log)
-	{
-		_logContext.Logs.Add(log);
-		var changes = _logContext.SaveChanges();
-		return changes > 0;
-	}
+    public bool Create(Log log)
+    {
+        _logContext.Logs.Add(log);
+        var changes = _logContext.SaveChanges();
+        return changes > 0;
+    }
 
-	public Log? GetById(ulong id, string? tenantId = null)
-	{
-		IQueryable<Log> query = _logContext.Logs;
+    public Log? GetById(ulong id, string? tenantId = null)
+    {
+        IQueryable<Log> query = _logContext.Logs;
 
-		if (!string.IsNullOrWhiteSpace(tenantId))
-			query = query.Where(p => p.TenantId == tenantId);
+        if (!string.IsNullOrWhiteSpace(tenantId))
+            query = query.Where(p => p.TenantId == tenantId);
 
-		return query.FirstOrDefault(p => p.Id == id);
-	}
+        return query.FirstOrDefault(p => p.Id == id);
+    }
 
-	public IEnumerable<Log> GetAll(int? page, int? pageSize, string? tenantId = null)
-	{
-		var query = _logContext.Logs.AsNoTracking();
+    public IEnumerable<Log> GetAll(int? page, int? pageSize, string? tenantId = null)
+    {
+        var query = _logContext.Logs.AsNoTracking();
 
-		if (!string.IsNullOrWhiteSpace(tenantId))
-			query = query.Where(p => p.TenantId == tenantId);
+        if (!string.IsNullOrWhiteSpace(tenantId))
+            query = query.Where(p => p.TenantId == tenantId);
 
-		if (page.HasValue && pageSize.HasValue)
-		{
-			query = query
-				.Skip(PaginationHelper.GetSkip(page.Value, pageSize.Value))
-				.Take(pageSize.Value);
-		}
+        if (page.HasValue && pageSize.HasValue)
+        {
+            query = query
+                .Skip(PaginationHelper.GetSkip(page.Value, pageSize.Value))
+                .Take(pageSize.Value);
+        }
 
-		var result = query
-			.OrderByDescending(o => o.CreatedAt)
-			.ToList();
+        var result = query
+            .OrderByDescending(o => o.CreatedAt)
+            .ToList();
 
-		return result;
-	}
+        return result;
+    }
 
-	public IEnumerable<Log> Search(
-		DateTime? dateTimeStart,
-		DateTime? dateTimeEnd,
-		LogLevel? logLevel,
-		string? message,
-		int? pageNumber,
-		int? pageSize,
-		string? tenantId = null,
-		string? correlationId = null,
-		string? traceId = null,
-		string? fullTextQuery = null)
-	{
-		IQueryable<Log> query = _logContext.Logs.AsNoTracking();
-		query = query.OrderBy(o => o.CreatedAt);
+    public IEnumerable<Log> Search(
+        DateTime? dateTimeStart,
+        DateTime? dateTimeEnd,
+        LogLevel? logLevel,
+        string? message,
+        int? pageNumber,
+        int? pageSize,
+        string? tenantId = null,
+        string? correlationId = null,
+        string? traceId = null,
+        string? fullTextQuery = null)
+    {
+        IQueryable<Log> query = _logContext.Logs.AsNoTracking();
+        query = query.OrderBy(o => o.CreatedAt);
 
-		if (dateTimeStart != null)
-		{
-			query = (dateTimeEnd == null)
-				? query.Where(p => p.CreatedAt >= dateTimeStart)
-				: query.Where(p => p.CreatedAt >= dateTimeStart && p.CreatedAt <= dateTimeEnd);
-		}
+        if (dateTimeStart != null)
+        {
+            query = (dateTimeEnd == null)
+                ? query.Where(p => p.CreatedAt >= dateTimeStart)
+                : query.Where(p => p.CreatedAt >= dateTimeStart && p.CreatedAt <= dateTimeEnd);
+        }
 
-		//if (IdProcess != null) { query = query.Where(p => p.Id == IdProcess); }
+        if (logLevel != null)
+            query = query.Where(p => p.LogLevel == logLevel);
 
-		if (logLevel != null)
-		{
-			query = query.Where(p => p.LogLevel == logLevel);
-		}
+        if (!string.IsNullOrEmpty(message?.Trim()))
+            query = query.Where(p => p.Message.Contains(message));
 
-		if (!string.IsNullOrEmpty(message?.Trim()))
-		{
-			query = query.Where(p => p.Message.Contains(message));
-		}
+        if (!string.IsNullOrWhiteSpace(tenantId))
+            query = query.Where(p => p.TenantId == tenantId);
 
-		if (!string.IsNullOrWhiteSpace(tenantId))
-			query = query.Where(p => p.TenantId == tenantId);
+        if (!string.IsNullOrWhiteSpace(correlationId))
+            query = query.Where(p => p.CorrelationId == correlationId);
 
-		if (!string.IsNullOrWhiteSpace(correlationId))
-			query = query.Where(p => p.CorrelationId == correlationId);
+        if (!string.IsNullOrWhiteSpace(traceId))
+            query = query.Where(p => p.TraceId == traceId);
 
-		if (!string.IsNullOrWhiteSpace(traceId))
-			query = query.Where(p => p.TraceId == traceId);
+        if (!string.IsNullOrWhiteSpace(fullTextQuery))
+            query = _fullText.ApplyToLogs(query, fullTextQuery);
 
-		if (!string.IsNullOrWhiteSpace(fullTextQuery))
-			query = query.Where(p =>
-				EF.Functions.Match(p.Message, fullTextQuery, MySqlMatchSearchMode.NaturalLanguage) > 0 ||
-				(p.StackTrace != null && EF.Functions.Match(p.StackTrace, fullTextQuery, MySqlMatchSearchMode.NaturalLanguage) > 0));
+        if (pageNumber is not null && pageSize is not null)
+        {
+            query = query
+                .Skip(PaginationHelper.GetSkip(pageNumber.Value, pageSize.Value))
+                .Take(pageSize.Value);
+        }
 
-		if (pageNumber is not null && pageSize is not null)
-		{
-			query = query
-				.Skip(PaginationHelper.GetSkip(pageNumber.Value, pageSize.Value))
-				.Take(pageSize.Value);
-		}
-
-		return query.ToList();
-	}
+        return query.ToList();
+    }
 }
