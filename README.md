@@ -1,6 +1,8 @@
 # RS.Logging
 
-Projeto de minimal API (.NET 10) para fazer o log geral e log de processos de outras aplicações.
+> Versão atual: **2.0.0** — veja o [CHANGELOG](CHANGELOG.md) para o histórico de mudanças.
+
+Projeto de minimal API (.NET 10) para fazer o log geral e log de processos de várias aplicações.
 
 Objetivo: entender problemas técnicos (exceções, erros HTTP, tempo de resposta, uso de
 endpoints, falhas externas, métricas e rastreamento entre serviços).
@@ -270,7 +272,7 @@ docs:     documentação
 - [X] Reorganização de endpoints (rotas REST, arquivos por grupo)
 - [X] Log de chamadas de API (`ApiCallLog`)
 - [X] Suporte a múltiplos bancos de dados (MariaDB, SQL Server, Postgres)
-- [ ] Segurança (autenticação/autorização)
+- [X] Segurança (autenticação JWT Bearer via Auth API externa)
 - [ ] Compressão
 - [ ] Webhook
 - [ ] Dashboard
