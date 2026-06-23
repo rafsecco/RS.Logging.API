@@ -6,8 +6,8 @@ public interface IApiCallLogRepository
     ApiCallLog? GetById(ulong id, string? tenantId = null);
     IEnumerable<ApiCallLog> GetAll(int? page, int? pageSize, string? tenantId = null);
     IEnumerable<ApiCallLog> Search(
-        DateTime? dateStart,
-        DateTime? dateEnd,
+        DateTime? dateStart = null,
+        DateTime? dateEnd = null,
         bool? isSuccess = null,
         int? responseStatusCode = null,
         string? url = null,

@@ -45,8 +45,8 @@ public class ApiCallLogRepository : IApiCallLogRepository
     }
 
     public IEnumerable<ApiCallLog> Search(
-        DateTime? dateStart,
-        DateTime? dateEnd,
+        DateTime? dateStart = null,
+        DateTime? dateEnd = null,
         bool? isSuccess = null,
         int? responseStatusCode = null,
         string? url = null,
