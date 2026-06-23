@@ -10,7 +10,7 @@ public static class ApiCallLogEndpoints
 {
     public static WebApplication MapApiCallLogEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("/api-call-log");
+        var group = app.MapGroup("/api-call-log").RequireAuthorization();
 
         group.MapGet("/", (
             [FromServices] IApiCallLogRepository repository,

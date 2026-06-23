@@ -9,7 +9,7 @@ public static class AuditEndpoints
 {
     public static WebApplication MapAuditEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("/log-process/audit");
+        var group = app.MapGroup("/log-process/audit").RequireAuthorization();
 
         group.MapGet("/", (
             [FromServices] ILogProcessRepository logProcessRepository,

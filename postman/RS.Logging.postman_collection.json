@@ -2,331 +2,440 @@
 	"info": {
 		"_postman_id": "5753fb9a-2378-4e0e-a389-f07bb7c8805d",
 		"name": "RS.Logging",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "10981583"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Log - Get All",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{URL}}/GetAll",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"GetAll"
-					],
-					"query": [
-						{
-							"key": "pn",
-							"value": "1",
-							"disabled": true
-						},
-						{
-							"key": "ps",
-							"value": "5",
-							"disabled": true
+			"name": "Logs",
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "X-Tenant-Id", "value": "appA", "disabled": true }
+						],
+						"url": {
+							"raw": "{{URL}}/logs",
+							"host": ["{{URL}}"],
+							"path": ["logs"],
+							"query": [
+								{ "key": "pn", "value": "1", "description": "Page Number", "disabled": true },
+								{ "key": "ps", "value": "10", "description": "Page Size", "disabled": true }
+							]
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Log - Get By Id",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{URL}}/GetById/1",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"GetById",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Log - Search",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{URL}}/Search/",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"Search",
-						""
-					],
-					"query": [
-						{
-							"key": "ds",
-							"value": "2024-01-06",
-							"description": "Date Start",
-							"disabled": true
-						},
-						{
-							"key": "de",
-							"value": "2024-01-06T09:43:00",
-							"description": "Date End",
-							"disabled": true
-						},
-						{
-							"key": "ll",
-							"value": "4",
-							"description": "logLevel",
-							"disabled": true
-						},
-						{
-							"key": "msg",
-							"value": "teste 1",
-							"description": "message",
-							"disabled": true
-						},
-						{
-							"key": "pn",
-							"value": "2",
-							"description": "Page Number",
-							"disabled": true
-						},
-						{
-							"key": "ps",
-							"value": "1",
-							"description": "Page Size",
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "LogProcess - Get All",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{URL}}/GetAllLogProcess",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"GetAllLogProcess"
-					],
-					"query": [
-						{
-							"key": "pn",
-							"value": "1",
-							"disabled": true
-						},
-						{
-							"key": "ps",
-							"value": "5",
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "LogProcess - Get LogProcess By Id",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{URL}}/GetLogProcessById/4",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"GetLogProcessById",
-						"4"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "LogProcess - Search",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{URL}}/LogProcessSearch/",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"LogProcessSearch",
-						""
-					],
-					"query": [
-						{
-							"key": "ds",
-							"value": "2024-01-06",
-							"description": "Date Start",
-							"disabled": true
-						},
-						{
-							"key": "de",
-							"value": "2024-01-06T09:43:00",
-							"description": "Date End",
-							"disabled": true
-						},
-						{
-							"key": "idp",
-							"value": "1",
-							"description": "IdProcess",
-							"disabled": true
-						},
-						{
-							"key": "nm",
-							"value": "Processo A",
-							"description": "processName",
-							"disabled": true
-						},
-						{
-							"key": "ll",
-							"value": "6",
-							"description": "logLevel",
-							"disabled": true
-						},
-						{
-							"key": "msg",
-							"value": "teste 1",
-							"description": "message",
-							"disabled": true
-						},
-						{
-							"key": "st",
-							"value": "Teste 4",
-							"description": "stackTrace",
-							"disabled": true
-						},
-						{
-							"key": "pn",
-							"value": "2",
-							"description": "Page Number",
-							"disabled": true
-						},
-						{
-							"key": "ps",
-							"value": "1",
-							"description": "Page Size",
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Log - CreateLog",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"logLevel\": 5,\r\n  \"message\": \"Teste 3\",\r\n  \"stackTrace\": \"Teste 3\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{URL}}/Create Log",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"Create Log"
-					]
+				{
+					"name": "Get By Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "X-Tenant-Id", "value": "appA", "disabled": true }
+						],
+						"url": {
+							"raw": "{{URL}}/logs/1",
+							"host": ["{{URL}}"],
+							"path": ["logs", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "X-Tenant-Id", "value": "appA", "disabled": true }
+						],
+						"url": {
+							"raw": "{{URL}}/logs/search",
+							"host": ["{{URL}}"],
+							"path": ["logs", "search"],
+							"query": [
+								{ "key": "ds", "value": "2024-01-01", "description": "Date Start", "disabled": true },
+								{ "key": "de", "value": "2024-12-31T23:59:59", "description": "Date End", "disabled": true },
+								{ "key": "ll", "value": "4", "description": "Log Level (0=Trace 1=Debug 2=Info 3=Warning 4=Error 5=Critical)", "disabled": true },
+								{ "key": "msg", "value": "exception", "description": "Message contains (LIKE)", "disabled": true },
+								{ "key": "q", "value": "NullReferenceException", "description": "Full-text search (FULLTEXT no MariaDB, LIKE nos demais)", "disabled": true },
+								{ "key": "cid", "value": "corr-123", "description": "CorrelationId", "disabled": true },
+								{ "key": "tid", "value": "trace-abc", "description": "TraceId", "disabled": true },
+								{ "key": "pn", "value": "1", "description": "Page Number", "disabled": true },
+								{ "key": "ps", "value": "10", "description": "Page Size", "disabled": true }
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Log",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "X-Tenant-Id", "value": "appA", "disabled": true },
+							{ "key": "X-Correlation-Id", "value": "corr-123", "disabled": true },
+							{ "key": "X-Trace-Id", "value": "trace-abc", "disabled": true }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"logLevel\": 4,\n  \"message\": \"NullReferenceException in PaymentService\",\n  \"stackTrace\": \"at PaymentService.Charge() line 42\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{URL}}/logs",
+							"host": ["{{URL}}"],
+							"path": ["logs"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Log Batch",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "X-Tenant-Id", "value": "appA", "disabled": true },
+							{ "key": "X-Correlation-Id", "value": "corr-123", "disabled": true },
+							{ "key": "X-Trace-Id", "value": "trace-abc", "disabled": true }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n  {\n    \"logLevel\": 2,\n    \"message\": \"Step 1 completed\"\n  },\n  {\n    \"logLevel\": 4,\n    \"message\": \"Step 2 failed\",\n    \"stackTrace\": \"at OrderService.Process() line 88\"\n  }\n]",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{URL}}/logs/batch",
+							"host": ["{{URL}}"],
+							"path": ["logs", "batch"]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "LogProcess - Create LogProcess",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"processId\": 10,\r\n  \"name\": \"Processo C\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "Log Process",
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "X-Tenant-Id", "value": "appA", "disabled": true }
+						],
+						"url": {
+							"raw": "{{URL}}/log-process",
+							"host": ["{{URL}}"],
+							"path": ["log-process"],
+							"query": [
+								{ "key": "pn", "value": "1", "description": "Page Number", "disabled": true },
+								{ "key": "ps", "value": "10", "description": "Page Size", "disabled": true }
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{URL}}/CreateLogProcess",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"CreateLogProcess"
-					]
+				{
+					"name": "Get By Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "X-Tenant-Id", "value": "appA", "disabled": true }
+						],
+						"url": {
+							"raw": "{{URL}}/log-process/1",
+							"host": ["{{URL}}"],
+							"path": ["log-process", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "X-Tenant-Id", "value": "appA", "disabled": true }
+						],
+						"url": {
+							"raw": "{{URL}}/log-process/search",
+							"host": ["{{URL}}"],
+							"path": ["log-process", "search"],
+							"query": [
+								{ "key": "ds", "value": "2024-01-01", "description": "Date Start", "disabled": true },
+								{ "key": "de", "value": "2024-12-31T23:59:59", "description": "Date End", "disabled": true },
+								{ "key": "idp", "value": "1", "description": "ProcessId", "disabled": true },
+								{ "key": "nm", "value": "Order Process", "description": "Process Name contains", "disabled": true },
+								{ "key": "ll", "value": "4", "description": "Log Level", "disabled": true },
+								{ "key": "msg", "value": "failed", "description": "Message contains", "disabled": true },
+								{ "key": "st", "value": "PaymentService", "description": "StackTrace contains", "disabled": true },
+								{ "key": "q", "value": "exception", "description": "Full-text search", "disabled": true },
+								{ "key": "cid", "value": "corr-123", "description": "CorrelationId", "disabled": true },
+								{ "key": "tid", "value": "trace-abc", "description": "TraceId", "disabled": true },
+								{ "key": "pn", "value": "1", "description": "Page Number", "disabled": true },
+								{ "key": "ps", "value": "10", "description": "Page Size", "disabled": true }
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Log Process",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "X-Tenant-Id", "value": "appA", "disabled": true },
+							{ "key": "X-Correlation-Id", "value": "corr-123", "disabled": true },
+							{ "key": "X-Trace-Id", "value": "trace-abc", "disabled": true }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"processId\": 10,\n  \"name\": \"Order Process\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{URL}}/log-process",
+							"host": ["{{URL}}"],
+							"path": ["log-process"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Log Process Detail",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "X-Correlation-Id", "value": "corr-123", "disabled": true },
+							{ "key": "X-Trace-Id", "value": "trace-abc", "disabled": true }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"logProcessId\": 1,\n  \"logLevel\": 2,\n  \"message\": \"Step 1: order validated\",\n  \"stackTrace\": null\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{URL}}/log-process/detail",
+							"host": ["{{URL}}"],
+							"path": ["log-process", "detail"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Log Process Detail Batch",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "X-Correlation-Id", "value": "corr-123", "disabled": true },
+							{ "key": "X-Trace-Id", "value": "trace-abc", "disabled": true }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n  {\n    \"logProcessId\": 1,\n    \"logLevel\": 2,\n    \"message\": \"Step 1: validated\"\n  },\n  {\n    \"logProcessId\": 1,\n    \"logLevel\": 2,\n    \"message\": \"Step 2: payment charged\"\n  },\n  {\n    \"logProcessId\": 1,\n    \"logLevel\": 4,\n    \"message\": \"Step 3: notification failed\",\n    \"stackTrace\": \"at NotificationService.Send() line 17\"\n  }\n]",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{URL}}/log-process/detail/batch",
+							"host": ["{{URL}}"],
+							"path": ["log-process", "detail", "batch"]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "LogProcess - Create LogProcessDetail",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"logProcessId\": 4,\r\n  \"logLevel\": 4,\r\n  \"message\": \"msg 4\",\r\n  \"stackTrace\": \"st 4\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "Audit",
+			"item": [
+				{
+					"name": "Get Audit",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "X-Tenant-Id", "value": "appA", "disabled": true }
+						],
+						"url": {
+							"raw": "{{URL}}/log-process/audit",
+							"host": ["{{URL}}"],
+							"path": ["log-process", "audit"],
+							"query": [
+								{ "key": "ds", "value": "2024-01-01", "description": "Date Start", "disabled": true },
+								{ "key": "de", "value": "2024-12-31T23:59:59", "description": "Date End", "disabled": true },
+								{ "key": "st", "value": "2", "description": "Status (0=Success 1=Warning 2=Error 3=Critical)", "disabled": true },
+								{ "key": "pn", "value": "1", "description": "Page Number", "disabled": true },
+								{ "key": "ps", "value": "10", "description": "Page Size", "disabled": true }
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{URL}}/CreateLogProcessDetail",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"CreateLogProcessDetail"
-					]
+				{
+					"name": "Get Audit By Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "X-Tenant-Id", "value": "appA", "disabled": true }
+						],
+						"url": {
+							"raw": "{{URL}}/log-process/audit/1",
+							"host": ["{{URL}}"],
+							"path": ["log-process", "audit", "1"]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
+		},
+		{
+			"name": "API Call Log",
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "X-Tenant-Id", "value": "appA", "disabled": true }
+						],
+						"url": {
+							"raw": "{{URL}}/api-call-log",
+							"host": ["{{URL}}"],
+							"path": ["api-call-log"],
+							"query": [
+								{ "key": "pn", "value": "1", "description": "Page Number", "disabled": true },
+								{ "key": "ps", "value": "10", "description": "Page Size", "disabled": true }
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "X-Tenant-Id", "value": "appA", "disabled": true }
+						],
+						"url": {
+							"raw": "{{URL}}/api-call-log/1",
+							"host": ["{{URL}}"],
+							"path": ["api-call-log", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "X-Tenant-Id", "value": "appA", "disabled": true }
+						],
+						"url": {
+							"raw": "{{URL}}/api-call-log/search",
+							"host": ["{{URL}}"],
+							"path": ["api-call-log", "search"],
+							"query": [
+								{ "key": "ds", "value": "2024-01-01", "description": "Date Start", "disabled": true },
+								{ "key": "de", "value": "2024-12-31T23:59:59", "description": "Date End", "disabled": true },
+								{ "key": "ok", "value": "false", "description": "IsSuccess (true/false)", "disabled": true },
+								{ "key": "sc", "value": "500", "description": "Response Status Code", "disabled": true },
+								{ "key": "url", "value": "pagamentos", "description": "URL contains", "disabled": true },
+								{ "key": "cid", "value": "corr-123", "description": "CorrelationId", "disabled": true },
+								{ "key": "tid", "value": "trace-abc", "description": "TraceId", "disabled": true },
+								{ "key": "pn", "value": "1", "description": "Page Number", "disabled": true },
+								{ "key": "ps", "value": "10", "description": "Page Size", "disabled": true }
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create - Sucesso",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "X-Tenant-Id", "value": "appA", "disabled": true },
+							{ "key": "X-Correlation-Id", "value": "corr-123", "disabled": true },
+							{ "key": "X-Trace-Id", "value": "trace-abc", "disabled": true }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"url\": \"https://api.pagamentos.com/v1/charge\",\n  \"httpMethod\": \"POST\",\n  \"isSuccess\": true,\n  \"requestBody\": \"{\\\"amount\\\": 99.90, \\\"currency\\\": \\\"BRL\\\"}\",\n  \"requestHeaders\": \"{\\\"Authorization\\\": \\\"Bearer ***\\\", \\\"Content-Type\\\": \\\"application/json\\\"}\",\n  \"responseStatusCode\": 200,\n  \"responseBody\": \"{\\\"chargeId\\\": \\\"ch_abc123\\\", \\\"status\\\": \\\"approved\\\"}\",\n  \"durationMs\": 342,\n  \"errorMessage\": null\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{URL}}/api-call-log",
+							"host": ["{{URL}}"],
+							"path": ["api-call-log"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create - Falha",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "X-Tenant-Id", "value": "appA", "disabled": true },
+							{ "key": "X-Correlation-Id", "value": "corr-123", "disabled": true },
+							{ "key": "X-Trace-Id", "value": "trace-abc", "disabled": true }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"url\": \"https://api.estoque.com/v1/reservar\",\n  \"httpMethod\": \"POST\",\n  \"isSuccess\": false,\n  \"requestBody\": \"{\\\"productId\\\": 42, \\\"qty\\\": 1}\",\n  \"requestHeaders\": null,\n  \"responseStatusCode\": 503,\n  \"responseBody\": \"{\\\"error\\\": \\\"Service temporarily unavailable\\\"}\",\n  \"durationMs\": 5001,\n  \"errorMessage\": \"The operation was canceled due to timeout.\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{URL}}/api-call-log",
+							"host": ["{{URL}}"],
+							"path": ["api-call-log"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create - Sem resposta (timeout/exception)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "X-Tenant-Id", "value": "appA", "disabled": true },
+							{ "key": "X-Correlation-Id", "value": "corr-123", "disabled": true },
+							{ "key": "X-Trace-Id", "value": "trace-abc", "disabled": true }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"url\": \"https://api.notificacoes.com/v1/send\",\n  \"httpMethod\": \"POST\",\n  \"isSuccess\": false,\n  \"requestBody\": \"{\\\"to\\\": \\\"user@example.com\\\", \\\"subject\\\": \\\"Pedido confirmado\\\"}\",\n  \"requestHeaders\": null,\n  \"responseStatusCode\": null,\n  \"responseBody\": null,\n  \"durationMs\": 30000,\n  \"errorMessage\": \"Connection refused: api.notificacoes.com:443\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{URL}}/api-call-log",
+							"host": ["{{URL}}"],
+							"path": ["api-call-log"]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
 		{
 			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
+			"script": { "type": "text/javascript", "exec": [""] }
 		},
 		{
 			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
+			"script": { "type": "text/javascript", "exec": [""] }
 		}
 	],
 	"variable": [

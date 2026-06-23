@@ -9,7 +9,8 @@ builder
 	.AddSwaggerConfig()
 	.AddDbContextConfig()
 	.AddIngestionConfig()
-	.AddRetentionConfig();
+	.AddRetentionConfig()
+	.AddAuthConfig();
 
 var app = builder.Build();
 

@@ -11,7 +11,7 @@ public static class LogEndpoints
 {
     public static WebApplication MapLogEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("/logs");
+        var group = app.MapGroup("/logs").RequireAuthorization();
 
         group.MapGet("/", (
             [FromServices] ILogRepository logRepository,
