@@ -1,0 +1,36 @@
+services:
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: RS_Logstream_SqlServer
+    restart: unless-stopped
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd",
+             "-S", "localhost", "-U", "sa", "-P", "${MSSQL_SA_PASSWORD}",
+             "-Q", "SELECT 1", "-No"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - logstream-net
+
+  logstream-api:
+    build:
+      context: ../src/BackEnd
+      dockerfile: ./RS.Logstream.API/Dockerfile
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      - DatabaseProvider=SqlServer
+      - ConnectionStrings__ConnSqlServer=Server=sqlserver,1433;Database=RS.Logging;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;
+    networks:
+      - logstream-net
+
+networks:
+  logstream-net:
+    driver: bridge

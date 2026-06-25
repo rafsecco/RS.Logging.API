@@ -61,5 +61,5 @@ dotnet ef migrations script <MigrationOrigem> <MigrationDestino> --project src/B
 ## Subir o banco antes de aplicar migrations
 
 ```bash
-docker compose -f docker/docker-compose.yml up maria-db -d
+docker compose -f docker/docker-compose.mariadb.yml up maria-db -d
 ```

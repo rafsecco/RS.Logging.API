@@ -1,0 +1,41 @@
+services:
+
+  maria-db:
+    image: mariadb:11
+    container_name: RS_Logstream_MariaDb
+    restart: unless-stopped
+    environment:
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - logstream-net
+
+  logstream-api:
+    build:
+      context: ../src/BackEnd
+      dockerfile: ./RS.Logstream.API/Dockerfile
+    depends_on:
+      maria-db:
+        condition: service_healthy
+    environment:
+      - DatabaseProvider=MariaDB
+      - ConnectionStrings__ConnMariaDB=Server=maria-db;Port=3306;Database=${MARIADB_DATABASE};Uid=${MARIADB_USER};Pwd=${MARIADB_PASSWORD};
+    networks:
+      - logstream-net
+
+volumes:
+  mariadb-data:
+
+networks:
+  logstream-net:
+    driver: bridge

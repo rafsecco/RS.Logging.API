@@ -1,0 +1,24 @@
+services:
+
+  # MariaDB — exposto quando usado com docker-compose.yml
+  maria-db:
+    ports:
+      - "3306:3306"
+
+  # SQL Server — exposto quando usado com docker-compose.sqlserver.yml
+  sqlserver:
+    ports:
+      - "1433:1433"
+
+  # PostgreSQL — exposto quando usado com docker-compose.postgres.yml
+  postgres:
+    ports:
+      - "5432:5432"
+
+  logstream-api:
+    container_name: RS_Logstream_API_Dev
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    restart: "no"

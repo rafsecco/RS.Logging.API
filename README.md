@@ -9,16 +9,28 @@ endpoints, falhas externas, métricas e rastreamento entre serviços).
 
 ## Subindo o projeto com Docker
 
-O `docker-compose.yml` cria dois containers: um para o banco de dados (MariaDB) e outro
-para a API (.NET).
+Os compose files ficam em `docker/`. Cada banco de dados tem seu próprio arquivo base,
+combinado com um override de ambiente (`dev` ou `prod`):
 
-Na raiz do projeto, execute:
 ```bash
-docker compose -f docker/docker-compose.yml up --build
+# MariaDB — DEV (Swagger habilitado, banco exposto na 3306, seed de dados de teste)
+docker compose -f docker/docker-compose.mariadb.yml -f docker/docker-compose.dev.yml up --build
+
+# MariaDB — PRD
+docker compose -f docker/docker-compose.mariadb.yml -f docker/docker-compose.prod.yml up --build
+
+# SQL Server — DEV
+docker compose -f docker/docker-compose.sqlserver.yml -f docker/docker-compose.dev.yml up --build
+
+# PostgreSQL — DEV
+docker compose -f docker/docker-compose.postgres.yml -f docker/docker-compose.dev.yml up --build
 ```
 
-- API: http://localhost:5000
-- Swagger: http://localhost:5000/swagger (apenas em Development)
+As credenciais ficam em `docker/.env` (não versionado). Na primeira subida, as migrations
+são aplicadas automaticamente e, em DEV, dados de teste são inseridos via seed.
+
+- API (DEV): http://localhost:5000
+- Swagger (DEV): http://localhost:5000/swagger
 
 Para testar os endpoints, importe a collection do Postman disponível em `postman/`.
 
