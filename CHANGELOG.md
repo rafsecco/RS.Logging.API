@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [2.0.0](https://github.com/rafsecco/RS.Logging.API/compare/v1.0.3...v2.0.0) (2026-06-23)
+## [2.0.0](https://github.com/rafsecco/RS.Logstream/compare/v1.0.3...v2.0.0) (2026-06-23)
 
 ### ⚠ Breaking Changes
 
@@ -46,8 +46,8 @@ All notable changes to this project will be documented in this file. See [standa
 - 64 testes unitários (InMemory): `LogRepositoryTests`, `LogProcessRepositoryTests`, `ApiCallLogRepositoryTests`, `LogProcessGetStatusTests`
 - Cobertura de filtros por tenant, correlationId, traceId, isSuccess, statusCode, URL substring e date range
 
-### [1.0.3](https://github.com/rafsecco/RS.Logging.API/compare/v1.0.2...v1.0.3) (2025-02-04)
+### [1.0.3](https://github.com/rafsecco/RS.Logstream/compare/v1.0.2...v1.0.3) (2025-02-04)
 
-### [1.0.2](https://github.com/rafsecco/RS.Logging.API/compare/v1.0.1...v1.0.2) (2025-02-04)
+### [1.0.2](https://github.com/rafsecco/RS.Logstream/compare/v1.0.1...v1.0.2) (2025-02-04)
 
 ### 1.0.1 (2025-02-04)

@@ -18,7 +18,7 @@ services:
     restart: always
     build:
       context: ../src/BackEnd
-      dockerfile: ./RS.Logging.API/Dockerfile
+      dockerfile: ./RS.Logstream.API/Dockerfile
     ports:
       - 5000:80
     environment:
