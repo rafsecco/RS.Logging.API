@@ -23,7 +23,7 @@ docker compose -f docker/docker-compose.mariadb.yml -f docker/docker-compose.pro
 docker compose -f docker/docker-compose.sqlserver.yml -f docker/docker-compose.dev.yml up --build
 
 # PostgreSQL — DEV
-docker compose -f docker/docker-compose.postgres.yml -f docker/docker-compose.dev.yml up --build
+docker compose -p rs-logstream -f docker/docker-compose.postgres.yml -f docker/docker-compose.dev.yml up -d --build
 ```
 
 As credenciais ficam em `docker/.env` (não versionado). Na primeira subida, as migrations
@@ -152,35 +152,37 @@ endpoints diretamente.
 
 ### Testando sem a Auth API (ambiente de desenvolvimento)
 
-Enquanto a Auth API não estiver disponível, é possível gerar tokens localmente com a
-ferramenta `dotnet-jwt`:
+Em Development (local e Docker), a API usa chave simétrica configurada em
+`appsettings.Development.json` — sem necessidade de um servidor de autenticação externo.
 
-```bash
-# Instalar a ferramenta (uma vez)
-dotnet tool install -g dotnet-jwt
+**Gerar um token de teste — PowerShell (sem instalação):**
 
-# Gerar um token de teste
-dotnet jwt create --issuer auth-api --audience rs-logging --secret "chave-dev-temporaria"
+```powershell
+$secret  = "rs-logging-dev-secret-minimo-32-chars!"
+$header  = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes('{"alg":"HS256","typ":"JWT"}')) -replace '=+$' -replace '\+','-' -replace '/','_'
+$exp     = [DateTimeOffset]::UtcNow.AddHours(1).ToUnixTimeSeconds()
+$payload = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("{`"iss`":`"auth-api`",`"aud`":`"rs-logging`",`"exp`":$exp}")) -replace '=+$' -replace '\+','-' -replace '/','_'
+$hmac    = [Security.Cryptography.HMACSHA256]::new([Text.Encoding]::UTF8.GetBytes($secret))
+$sig     = [Convert]::ToBase64String($hmac.ComputeHash([Text.Encoding]::ASCII.GetBytes("$header.$payload"))) -replace '=+$' -replace '\+','-' -replace '/','_'
+"$header.$payload.$sig"
 ```
 
+**Alternativa visual — jwt.io:**
+
+Acesse [jwt.io](https://jwt.io), selecione algoritmo `HS256` e preencha:
+- `iss`: `auth-api`
+- `aud`: `rs-logging`
+- `exp`: timestamp Unix futuro (ex: `9999999999`)
+- Secret: `rs-logging-dev-secret-minimo-32-chars!`
+
 Cole o token gerado no campo **Authorize** do Swagger ou no header das requisições:
+
 ```
 Authorization: Bearer <token gerado>
 ```
 
-Para que a validação funcione localmente, configure `appsettings.Development.json` com
-os mesmos valores usados na geração do token:
-
-```json
-"Auth": {
-  "Issuer": "auth-api",
-  "Audience": "rs-logging",
-  "RequireHttpsMetadata": false
-}
-```
-
-Quando a Auth API estiver pronta, basta atualizar `Auth:Authority` com a URL real e
-remover a configuração de desenvolvimento.
+Quando a Auth API estiver pronta, basta setar `Auth:Authority` com a URL real e remover
+`Auth:Secret` do `appsettings.Development.json`.
 
 ## Suporte a múltiplos bancos de dados
 

@@ -18,13 +18,13 @@ builder
 var app = builder.Build();
 
 app.UseApiConfigure()
-   .UseCorsConfigure()
-   .UseSwaggerConfigure();
+	.UseCorsConfigure()
+	.UseSwaggerConfigure();
 
 app.MapLogEndpoints()
-   .MapLogProcessEndpoints()
-   .MapAuditEndpoints()
-   .MapApiCallLogEndpoints();
+	.MapLogProcessEndpoints()
+	.MapAuditEndpoints()
+	.MapApiCallLogEndpoints();
 
 using (var scope = app.Services.CreateScope())
 {
