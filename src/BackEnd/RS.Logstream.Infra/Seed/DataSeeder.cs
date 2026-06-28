@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using RS.Logstream.Domain.ApiCall;
 using RS.Logstream.Domain.Log;
 using RS.Logstream.Domain.LogProcess;
@@ -6,7 +6,7 @@ using RS.Logstream.Infra.Contexts;
 
 namespace RS.Logstream.Infra.Seed;
 
-public class DataSeeder(RSLoggingDbContext context)
+public class DataSeeder(RSLogstreamDbContext context)
 {
 	public void Seed()
 	{

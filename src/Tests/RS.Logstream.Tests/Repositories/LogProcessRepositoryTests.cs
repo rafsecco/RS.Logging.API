@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RS.Logstream.Domain.LogProcess;
 using RS.Logstream.Infra.Contexts;
@@ -10,12 +10,12 @@ namespace RS.Logstream.Tests.Repositories;
 
 public class LogProcessRepositoryTests
 {
-	private static RSLoggingDbContext CreateContext() =>
-		new(new DbContextOptionsBuilder<RSLoggingDbContext>()
+	private static RSLogstreamDbContext CreateContext() =>
+		new(new DbContextOptionsBuilder<RSLogstreamDbContext>()
 			.UseInMemoryDatabase(Guid.NewGuid().ToString())
 			.Options, new MariaDbColumnTypes());
 
-	private static LogProcessRepository Repo(RSLoggingDbContext ctx) =>
+	private static LogProcessRepository Repo(RSLogstreamDbContext ctx) =>
 		new(ctx, new LikeFullTextProvider());
 
 	#region Success

@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RS.Logstream.Domain.ApiCall;
 using RS.Logstream.Domain.Log;
 using RS.Logstream.Domain.LogProcess;
@@ -6,7 +6,7 @@ using RS.Logstream.Infra.Mappings;
 using RS.Logstream.Infra.Providers;
 
 namespace RS.Logstream.Infra.Contexts;
-public class RSLoggingDbContext : DbContext
+public class RSLogstreamDbContext : DbContext
 {
 	private readonly IDbColumnTypes _columnTypes;
 
@@ -15,7 +15,7 @@ public class RSLoggingDbContext : DbContext
 	public DbSet<LogProcessDetail> LogProcessDetails { get; set; }
 	public DbSet<ApiCallLog> ApiCallLogs { get; set; }
 
-	public RSLoggingDbContext(DbContextOptions<RSLoggingDbContext> options, IDbColumnTypes columnTypes)
+	public RSLogstreamDbContext(DbContextOptions<RSLogstreamDbContext> options, IDbColumnTypes columnTypes)
 		: base(options)
 	{
 		_columnTypes = columnTypes;

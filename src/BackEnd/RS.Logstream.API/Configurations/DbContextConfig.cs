@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using RS.Logstream.Domain.ApiCall.Contracts;
 using RS.Logstream.Domain.Log.Contracts;
 using RS.Logstream.Domain.LogProcess.Contracts;
@@ -19,33 +20,36 @@ public static class DbContextConfig
 			case "SqlServer":
 				builder.Services.AddSingleton<IDbColumnTypes, SqlServerColumnTypes>();
 				builder.Services.AddSingleton<IFullTextSearchProvider, LikeFullTextProvider>();
-				builder.Services.AddDbContext<RSLoggingDbContext>(opt =>
+				builder.Services.AddDbContext<RSLogstreamDbContext>(opt =>
 					opt.UseSqlServer(
 						builder.Configuration.GetConnectionString("ConnSqlServer"),
 						o => o.EnableRetryOnFailure(3, TimeSpan.FromSeconds(6), null)
 							 .MigrationsHistoryTable("__EFMigrationsHistory_SqlServer")
-							 .MigrationsAssembly("RS.Logstream.Infra")));
+							 .MigrationsAssembly("RS.Logstream.Infra"))
+					.ReplaceService<IMigrationsAssembly, SqlServerMigrationsAssembly>());
 				break;
 
 			case "Postgres":
 				builder.Services.AddSingleton<IDbColumnTypes, PostgresColumnTypes>();
 				builder.Services.AddSingleton<IFullTextSearchProvider, LikeFullTextProvider>();
-				builder.Services.AddDbContext<RSLoggingDbContext>(opt =>
+				builder.Services.AddDbContext<RSLogstreamDbContext>(opt =>
 					opt.UseNpgsql(
 						builder.Configuration.GetConnectionString("ConnPostgres"),
 						o => o.EnableRetryOnFailure(3, TimeSpan.FromSeconds(6), null)
 							 .MigrationsHistoryTable("__EFMigrationsHistory_Postgres")
-							 .MigrationsAssembly("RS.Logstream.Infra")));
+							 .MigrationsAssembly("RS.Logstream.Infra"))
+					.ReplaceService<IMigrationsAssembly, PostgresMigrationsAssembly>());
 				break;
 
 			default: // MariaDB
 				var strConn = builder.Configuration.GetConnectionString("ConnMariaDB");
 				builder.Services.AddSingleton<IDbColumnTypes, MariaDbColumnTypes>();
 				builder.Services.AddSingleton<IFullTextSearchProvider, MariaDbFullTextProvider>();
-				builder.Services.AddDbContext<RSLoggingDbContext>(opt =>
+				builder.Services.AddDbContext<RSLogstreamDbContext>(opt =>
 					opt.UseMySql(strConn, ServerVersion.AutoDetect(strConn),
 						o => o.EnableRetryOnFailure(3, TimeSpan.FromSeconds(6), null)
 							 .MigrationsAssembly("RS.Logstream.Infra"))
+					.ReplaceService<IMigrationsAssembly, MariaDbMigrationsAssembly>()
 					.LogTo(Console.WriteLine)
 					.EnableSensitiveDataLogging()
 					.EnableDetailedErrors());

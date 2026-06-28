@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RS.Core.Pagination;
 using RS.Logstream.Domain.ApiCall;
 using RS.Logstream.Domain.ApiCall.Contracts;
@@ -8,9 +8,9 @@ namespace RS.Logstream.Infra.Repositories;
 
 public class ApiCallLogRepository : IApiCallLogRepository
 {
-	private readonly RSLoggingDbContext _context;
+	private readonly RSLogstreamDbContext _context;
 
-	public ApiCallLogRepository(RSLoggingDbContext context)
+	public ApiCallLogRepository(RSLogstreamDbContext context)
 	{
 		_context = context;
 	}

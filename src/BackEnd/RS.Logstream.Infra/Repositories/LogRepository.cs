@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RS.Core.Pagination;
 using RS.Logstream.Domain.Log;
@@ -10,10 +10,10 @@ namespace RS.Logstream.Infra.Repositories;
 
 public class LogRepository : ILogRepository
 {
-	private readonly RSLoggingDbContext _logContext;
+	private readonly RSLogstreamDbContext _logContext;
 	private readonly IFullTextSearchProvider _fullText;
 
-	public LogRepository(RSLoggingDbContext logContext, IFullTextSearchProvider fullText)
+	public LogRepository(RSLogstreamDbContext logContext, IFullTextSearchProvider fullText)
 	{
 		_logContext = logContext;
 		_fullText = fullText;

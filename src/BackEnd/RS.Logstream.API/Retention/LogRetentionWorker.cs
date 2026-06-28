@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using RS.Logstream.Infra.Contexts;
 
@@ -40,7 +40,7 @@ public class LogRetentionWorker : BackgroundService
 		var options = _options.CurrentValue;
 
 		using var scope = _serviceProvider.CreateScope();
-		var context = scope.ServiceProvider.GetRequiredService<RSLoggingDbContext>();
+		var context = scope.ServiceProvider.GetRequiredService<RSLogstreamDbContext>();
 
 		var tenantIds = await context.Logs
 			.Select(l => l.TenantId)

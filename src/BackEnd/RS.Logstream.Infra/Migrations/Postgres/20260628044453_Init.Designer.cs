@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RS.Logstream.Infra.Contexts;
@@ -11,9 +12,11 @@ using RS.Logstream.Infra.Contexts;
 namespace RS.Logstream.Infra.Migrations.Postgres
 {
     [DbContext(typeof(RSLogstreamDbContext))]
-    partial class RSLogstreamDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260628044453_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

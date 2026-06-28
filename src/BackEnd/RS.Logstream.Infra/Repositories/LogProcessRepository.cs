@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RS.Core.Pagination;
 using RS.Logstream.Domain.LogProcess;
@@ -10,10 +10,10 @@ namespace RS.Logstream.Infra.Repositories;
 
 public class LogProcessRepository : ILogProcessRepository
 {
-	private readonly RSLoggingDbContext _logProcessContext;
+	private readonly RSLogstreamDbContext _logProcessContext;
 	private readonly IFullTextSearchProvider _fullText;
 
-	public LogProcessRepository(RSLoggingDbContext logProcessContext, IFullTextSearchProvider fullText)
+	public LogProcessRepository(RSLogstreamDbContext logProcessContext, IFullTextSearchProvider fullText)
 	{
 		_logProcessContext = logProcessContext;
 		_fullText = fullText;
@@ -128,7 +128,7 @@ public class LogProcessRepository : ILogProcessRepository
 		if (IdProcess != null) { query = query.Where(p => p.LogProcessId == IdProcess); }
 
 		if (!string.IsNullOrEmpty(processName?.Trim()))
-			query = query.Where(tb => tb.LogProcess.Name.Contains(processName));
+			query = query.Where(tb => tb.LogProcess.Name!.Contains(processName));
 
 		if (logLevel != null)
 			query = query.Where(p => p.LogLevel == logLevel);
@@ -137,7 +137,7 @@ public class LogProcessRepository : ILogProcessRepository
 			query = query.Where(p => p.Message.Contains(message));
 
 		if (!string.IsNullOrEmpty(stackTrace?.Trim()))
-			query = query.Where(p => p.StackTrace.Contains(stackTrace));
+			query = query.Where(p => p.StackTrace!.Contains(stackTrace));
 
 		if (!string.IsNullOrWhiteSpace(tenantId))
 			query = query.Where(p => p.LogProcess.TenantId == tenantId);

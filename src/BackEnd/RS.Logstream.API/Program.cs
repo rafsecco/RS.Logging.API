@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RS.Logstream.API.Configurations;
 using RS.Logstream.API.Endpoints;
 using RS.Logstream.Infra.Contexts;
@@ -28,7 +28,7 @@ app.MapLogEndpoints()
 
 using (var scope = app.Services.CreateScope())
 {
-	var context = scope.ServiceProvider.GetRequiredService<RSLoggingDbContext>();
+	var context = scope.ServiceProvider.GetRequiredService<RSLogstreamDbContext>();
 	context.Database.Migrate();
 
 	if (app.Environment.IsDevelopment())

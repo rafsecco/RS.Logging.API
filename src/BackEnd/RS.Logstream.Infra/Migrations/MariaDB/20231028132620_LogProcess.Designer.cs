@@ -10,7 +10,7 @@ using RS.Logstream.Infra.Contexts;
 
 namespace RS.Logstream.Infra.Migrations.MariaDB
 {
-	[DbContext(typeof(RSLoggingDbContext))]
+	[DbContext(typeof(RSLogstreamDbContext))]
 	[Migration("20231028132620_LogProcess")]
 	partial class LogProcess
 	{

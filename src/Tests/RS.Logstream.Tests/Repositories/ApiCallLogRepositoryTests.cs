@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RS.Logstream.Domain.ApiCall;
 using RS.Logstream.Infra.Contexts;
 using RS.Logstream.Infra.Providers;
@@ -9,12 +9,12 @@ namespace RS.Logstream.Tests.Repositories;
 
 public class ApiCallLogRepositoryTests
 {
-	private static RSLoggingDbContext CreateContext() =>
-		new(new DbContextOptionsBuilder<RSLoggingDbContext>()
+	private static RSLogstreamDbContext CreateContext() =>
+		new(new DbContextOptionsBuilder<RSLogstreamDbContext>()
 			.UseInMemoryDatabase(Guid.NewGuid().ToString())
 			.Options, new MariaDbColumnTypes());
 
-	private static ApiCallLogRepository Repo(RSLoggingDbContext ctx) =>
+	private static ApiCallLogRepository Repo(RSLogstreamDbContext ctx) =>
 		new(ctx);
 
 	private static ApiCallLog Success(string url = "https://api.pagamentos.com/charge", string? tenantId = null, string? correlationId = null, string? traceId = null) =>

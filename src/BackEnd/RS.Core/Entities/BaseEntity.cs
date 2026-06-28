@@ -8,5 +8,5 @@ public class BaseEntity
 	public ulong Id { get; private set; }
 
 	[Required]
-	public DateTime CreatedAt { get; private set; } = DateTime.Now;
+	public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 }

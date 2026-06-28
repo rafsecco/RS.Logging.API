@@ -11,7 +11,7 @@ using RS.Logstream.Infra.Contexts;
 
 namespace RS.Logstream.Infra.Migrations.MariaDB
 {
-	[DbContext(typeof(RSLoggingDbContext))]
+	[DbContext(typeof(RSLogstreamDbContext))]
 	[Migration("20260622103622_AddApiCallLog")]
 	partial class AddApiCallLog
 	{
