@@ -40,7 +40,7 @@ public static class SwaggerConfig
 
 	public static WebApplication UseSwaggerConfigure(this WebApplication app)
 	{
-		if (app.Environment.IsDevelopment())
+		if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 		{
 			app.UseSwagger();
 			app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RS.Logstream v1"));

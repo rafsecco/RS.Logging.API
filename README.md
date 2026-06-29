@@ -10,11 +10,20 @@ endpoints, falhas externas, métricas e rastreamento entre serviços).
 ## Subindo o projeto com Docker
 
 Os compose files ficam em `docker/`. Cada banco de dados tem seu próprio arquivo base,
-combinado com um override de ambiente (`dev` ou `prod`):
+combinado com um override de ambiente:
+
+| Ambiente | `ASPNETCORE_ENVIRONMENT` | Porta | Swagger | Seed |
+|---|---|---|---|---|
+| Development | `Development` | 5000 | ✓ | ✓ |
+| Staging | `Staging` | 5001 | ✓ | ✗ |
+| Production | `Production` | 80 | ✗ | ✗ |
 
 ```bash
 # MariaDB — DEV (Swagger habilitado, banco exposto na 3306, seed de dados de teste)
 docker compose -f docker/docker-compose.mariadb.yml -f docker/docker-compose.dev.yml up --build
+
+# MariaDB — STAGING (sem seed, Swagger habilitado para testes internos)
+docker compose -f docker/docker-compose.mariadb.yml -f docker/docker-compose.staging.yml up --build
 
 # MariaDB — PRD
 docker compose -f docker/docker-compose.mariadb.yml -f docker/docker-compose.prod.yml up --build
@@ -29,8 +38,9 @@ docker compose -p rs-logstream -f docker/docker-compose.postgres.yml -f docker/d
 As credenciais ficam em `docker/.env` (não versionado). Na primeira subida, as migrations
 são aplicadas automaticamente e, em DEV, dados de teste são inseridos via seed.
 
-- API (DEV): http://localhost:5000
-- Swagger (DEV): http://localhost:5000/swagger
+- API (DEV): http://localhost:5000 — Swagger: http://localhost:5000/swagger
+- API (STG): http://localhost:5001 — Swagger: http://localhost:5001/swagger
+- API (PRD): http://localhost:80
 
 Para testar os endpoints, importe a collection do Postman disponível em `postman/`.
 
@@ -135,30 +145,44 @@ correlacionar o registro com os demais logs do fluxo.
 
 ## Autenticação
 
-Todos os endpoints exigem um JWT válido no header `Authorization: Bearer <token>`. O
-token deve ser emitido pela Auth API configurada em `appsettings.json`:
+Todos os endpoints exigem um JWT válido no header `Authorization: Bearer <token>`. O modo
+de validação depende do ambiente:
+
+| Ambiente | Modo | Chave |
+|---|---|---|
+| Production | OIDC — discovery endpoint da Auth API | `Auth:Authority` |
+| Staging | Chave simétrica local (HS256) | `Auth:Secret` |
+| Development | Chave simétrica local (HS256) | `Auth:Secret` |
+
+`Auth:Secret` é **bloqueado em Production** — a API não inicia se estiver definido nesse
+ambiente. Se `Auth:Authority` e `Auth:Secret` estiverem ambos ausentes em qualquer
+ambiente, a API também não inicia (fail-fast no startup).
+
+O Swagger UI (`/swagger`) — disponível em Development e Staging — exibe o botão
+**Authorize** para colar o token e testar os endpoints diretamente.
+
+### Configuração por ambiente
+
+**Production** — preencher em `appsettings.Production.json`:
 
 ```json
 "Auth": {
-  "Authority": "https://auth-api.internal",
-  "Audience": "rs-logging",
+  "Authority": "https://url-da-auth-api",
   "Issuer": "auth-api",
+  "Audience": "rs-logging",
   "RequireHttpsMetadata": true
 }
 ```
 
-O Swagger UI (`/swagger`) exibe o botão **Authorize** para colar o token e testar os
-endpoints diretamente.
+**Staging e Development** — a `Secret` já está configurada nos respectivos
+`appsettings.{Environment}.json`. Trocar antes de usar em ambientes compartilhados.
 
-### Testando sem a Auth API (ambiente de desenvolvimento)
+### Gerando um token de teste (Development e Staging)
 
-Em Development (local e Docker), a API usa chave simétrica configurada em
-`appsettings.Development.json` — sem necessidade de um servidor de autenticação externo.
-
-**Gerar um token de teste — PowerShell (sem instalação):**
+**PowerShell (sem instalação):**
 
 ```powershell
-$secret  = "rs-logging-dev-secret-minimo-32-chars!"
+$secret  = "rs-logging-dev-secret-minimo-32-chars!"   # usar a Secret do ambiente alvo
 $header  = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes('{"alg":"HS256","typ":"JWT"}')) -replace '=+$' -replace '\+','-' -replace '/','_'
 $exp     = [DateTimeOffset]::UtcNow.AddHours(1).ToUnixTimeSeconds()
 $payload = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("{`"iss`":`"auth-api`",`"aud`":`"rs-logging`",`"exp`":$exp}")) -replace '=+$' -replace '\+','-' -replace '/','_'
@@ -169,20 +193,17 @@ $sig     = [Convert]::ToBase64String($hmac.ComputeHash([Text.Encoding]::ASCII.Ge
 
 **Alternativa visual — jwt.io:**
 
-Acesse [jwt.io](https://jwt.io), selecione algoritmo `HS256` e preencha:
+Acesse [jwt.io](https://jwt.io), selecione `HS256` e preencha:
 - `iss`: `auth-api`
 - `aud`: `rs-logging`
 - `exp`: timestamp Unix futuro (ex: `9999999999`)
-- Secret: `rs-logging-dev-secret-minimo-32-chars!`
+- Secret: o valor de `Auth:Secret` do ambiente alvo
 
-Cole o token gerado no campo **Authorize** do Swagger ou no header das requisições:
+Cole o token no campo **Authorize** do Swagger ou no header:
 
 ```
 Authorization: Bearer <token gerado>
 ```
-
-Quando a Auth API estiver pronta, basta setar `Auth:Authority` com a URL real e remover
-`Auth:Secret` do `appsettings.Development.json`.
 
 ## Suporte a múltiplos bancos de dados
 
@@ -286,7 +307,8 @@ docs:     documentação
 - [X] Reorganização de endpoints (rotas REST, arquivos por grupo)
 - [X] Log de chamadas de API (`ApiCallLog`)
 - [X] Suporte a múltiplos bancos de dados (MariaDB, SQL Server, Postgres)
-- [X] Segurança (autenticação JWT Bearer via Auth API externa)
+- [X] Segurança — JWT Bearer com modo OIDC (Production) e chave simétrica (Development/Staging)
+- [X] Ambientes distintos (Development, Staging, Production) com appsettings e docker-compose por ambiente
 - [ ] Compressão
 - [ ] Webhook
 - [ ] Dashboard

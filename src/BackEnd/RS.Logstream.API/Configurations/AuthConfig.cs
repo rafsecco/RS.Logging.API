@@ -16,9 +16,9 @@ public static class AuthConfig
 			throw new InvalidOperationException(
 				"Auth: configure Auth:Authority (produção) ou Auth:Secret (desenvolvimento).");
 
-		if (!string.IsNullOrEmpty(secret) && !builder.Environment.IsDevelopment())
+		if (!string.IsNullOrEmpty(secret) && builder.Environment.IsProduction())
 			throw new InvalidOperationException(
-				"Auth:Secret não pode ser usado fora de Development. Configure Auth:Authority.");
+				"Auth:Secret não pode ser usado em Production. Configure Auth:Authority.");
 
 		builder.Services
 			.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

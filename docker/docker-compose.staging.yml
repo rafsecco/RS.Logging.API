@@ -1,0 +1,9 @@
+services:
+
+  logstream-api:
+    container_name: RS_Logstream_API_Stg
+    ports:
+      - "5001:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Staging
+    restart: unless-stopped

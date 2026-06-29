@@ -12,6 +12,8 @@ public abstract class NamespacedMigrationsAssembly : MigrationsAssembly
 {
     private readonly string _namespace;
     private IReadOnlyDictionary<string, TypeInfo>? _filtered;
+    private ModelSnapshot? _snapshot;
+    private bool _snapshotResolved;
 
     protected NamespacedMigrationsAssembly(
         ICurrentDbContext currentContext,
@@ -28,6 +30,27 @@ public abstract class NamespacedMigrationsAssembly : MigrationsAssembly
         _filtered ??= base.Migrations
             .Where(kv => kv.Value.Namespace == _namespace)
             .ToDictionary(kv => kv.Key, kv => kv.Value);
+
+    // Filters the model snapshot to the provider-specific namespace so that
+    // EF Core diffs against the correct baseline and generates CreateTable
+    // (not AlterColumn) when adding the first migration for a provider.
+    public override ModelSnapshot? ModelSnapshot
+    {
+        get
+        {
+            if (!_snapshotResolved)
+            {
+                _snapshot = (ModelSnapshot?)Assembly.GetExportedTypes()
+                    .Where(t => !t.IsAbstract
+                             && typeof(ModelSnapshot).IsAssignableFrom(t)
+                             && t.Namespace == _namespace)
+                    .Select(t => Activator.CreateInstance(t))
+                    .FirstOrDefault();
+                _snapshotResolved = true;
+            }
+            return _snapshot;
+        }
+    }
 }
 
 public sealed class MariaDbMigrationsAssembly(
