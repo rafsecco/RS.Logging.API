@@ -26,8 +26,9 @@ app.MapLogEndpoints()
 	.MapAuditEndpoints()
 	.MapApiCallLogEndpoints();
 
-using (var scope = app.Services.CreateScope())
+if (!app.Environment.IsEnvironment("Testing"))
 {
+	using var scope = app.Services.CreateScope();
 	var context = scope.ServiceProvider.GetRequiredService<RSLogstreamDbContext>();
 	context.Database.Migrate();
 
@@ -36,3 +37,5 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+public partial class Program { }

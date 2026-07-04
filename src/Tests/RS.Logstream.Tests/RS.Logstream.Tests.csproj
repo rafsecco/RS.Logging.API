@@ -19,11 +19,13 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\BackEnd\RS.Logstream.Domain\RS.Logstream.Domain.csproj" />
     <ProjectReference Include="..\..\BackEnd\RS.Logstream.Infra\RS.Logstream.Infra.csproj" />
+    <ProjectReference Include="..\..\BackEnd\RS.Logstream.API\RS.Logstream.API.csproj" />
   </ItemGroup>
 
 </Project>
