@@ -279,6 +279,39 @@ registros mais antigos que o `cutoff`. Os registros correspondentes em
 `TB_LogProcessDetail` são removidos automaticamente via `ON DELETE CASCADE`. Falhas no
 expurgo de um tenant são logadas e não interrompem o worker nem a API.
 
+## Testes
+
+O projeto `src/Tests/RS.Logstream.Tests` reúne dois tipos de teste, ambos em xUnit:
+
+- **Testes de repositório/domínio** (`Repositories/`, `Domain/`) — testam a camada de EF Core
+  diretamente contra um banco `InMemory`, sem subir a API.
+- **Testes de integração HTTP** (`Integration/`) — sobem a API real via
+  `WebApplicationFactory<Program>` e exercitam os 4 grupos de endpoints fim a fim (request →
+  resposta HTTP → persistência), incluindo autenticação JWT, paginação, filtros de busca e o
+  fluxo assíncrono de ingestão (`202 Accepted` + gravação em background).
+
+Rodar toda a suíte:
+```bash
+dotnet test src/Tests/RS.Logstream.Tests/RS.Logstream.Tests.csproj
+```
+
+Rodar só os testes de integração:
+```bash
+dotnet test src/Tests/RS.Logstream.Tests/RS.Logstream.Tests.csproj --filter "FullyQualifiedName~Integration"
+```
+
+**Como funciona sem banco/Docker real**: a `CustomWebApplicationFactory` sobe o ambiente
+`Testing`, força `Auth:Secret` (HS256) para permitir gerar tokens de teste localmente, e
+substitui o `RSLogstreamDbContext` por um provider `InMemory` — isolado por instância de
+factory (uma por classe de teste). Isso evita qualquer dependência de rede real, mas também
+significa que a busca full-text nativa do MariaDB (`q=`, `EF.Functions.Match`) **não é
+exercitada** pelos testes de integração (a factory usa o fallback `LikeFullTextProvider`).
+Cobrir o `MariaDbFullTextProvider` de verdade exigiria um MariaDB real (ex. via Testcontainers)
+— fica registrado como possível evolução futura.
+
+Para isolar dados entre testes que compartilham a mesma instância `InMemory` dentro de uma
+classe, cada teste usa um `X-Tenant-Id` (`Guid`) próprio.
+
 ## Padronização dos commits
 
 Seguir o padrão de [Conventional Commits](https://www.conventionalcommits.org/):
@@ -309,6 +342,7 @@ docs:     documentação
 - [X] Suporte a múltiplos bancos de dados (MariaDB, SQL Server, Postgres)
 - [X] Segurança — JWT Bearer com modo OIDC (Production) e chave simétrica (Development/Staging)
 - [X] Ambientes distintos (Development, Staging, Production) com appsettings e docker-compose por ambiente
+- [X] Testes de integração HTTP para os endpoints (`WebApplicationFactory` + xUnit)
 - [ ] Compressão
 - [ ] Webhook
 - [ ] Dashboard

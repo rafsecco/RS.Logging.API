@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [Unreleased]
+
+### Tests
+
+- **Testes de integração HTTP** — nova suíte em `src/Tests/RS.Logstream.Tests/Integration/`
+  usando `WebApplicationFactory<Program>` para exercitar os 4 grupos de endpoints
+  (`/logs`, `/log-process`, `/log-process/audit`, `/api-call-log`) fim a fim: autenticação
+  JWT (401 sem token), paginação, filtros de busca, e o fluxo assíncrono de ingestão
+  (`202 Accepted` + polling até a gravação em background)
+- `CustomWebApplicationFactory` roda em ambiente `Testing`, com chave JWT simétrica de teste
+  e `RSLogstreamDbContext` substituído por provider `InMemory` — sem dependência de banco ou
+  Docker reais
+- `Program.cs` ganhou um marker `public partial class Program {}` e um guard para pular
+  `Database.Migrate()`/seed em ambiente `Testing` (necessário para o `WebApplicationFactory`
+  funcionar com o provider `InMemory`, que não suporta migrations)
+
 ## [2.0.0](https://github.com/rafsecco/RS.Logstream/compare/v1.0.3...v2.0.0) (2026-06-23)
 
 ### ⚠ Breaking Changes
