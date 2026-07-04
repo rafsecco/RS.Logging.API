@@ -16,7 +16,7 @@ namespace RS.Logstream.Infra.Migrations.MariaDB
                 name: "TB_ApiCallLog",
                 columns: table => new
                 {
-                    id_ApiCallLog = table.Column<ulong>(type: "BIGINT UNSIGNED", nullable: false)
+                    id_ApiCallLog = table.Column<long>(type: "BIGINT", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     dt_CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "NOW()"),
                     fl_IsSuccess = table.Column<bool>(type: "tinyint(1)", nullable: false),
@@ -42,7 +42,7 @@ namespace RS.Logstream.Infra.Migrations.MariaDB
                 name: "TB_Log",
                 columns: table => new
                 {
-                    id_Log = table.Column<ulong>(type: "BIGINT UNSIGNED", nullable: false)
+                    id_Log = table.Column<long>(type: "BIGINT", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     ie_LogLevel = table.Column<ushort>(type: "SMALLINT UNSIGNED", nullable: false),
                     dt_CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "NOW()"),
@@ -62,7 +62,7 @@ namespace RS.Logstream.Infra.Migrations.MariaDB
                 name: "TB_LogProcess",
                 columns: table => new
                 {
-                    id_LogProcess = table.Column<ulong>(type: "BIGINT UNSIGNED", nullable: false)
+                    id_LogProcess = table.Column<long>(type: "BIGINT", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     id_Process = table.Column<uint>(type: "INT UNSIGNED", nullable: false),
                     dt_CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "NOW()"),
@@ -81,9 +81,9 @@ namespace RS.Logstream.Infra.Migrations.MariaDB
                 name: "TB_LogProcessDetail",
                 columns: table => new
                 {
-                    id_LogProcessDetails = table.Column<ulong>(type: "BIGINT UNSIGNED", nullable: false)
+                    id_LogProcessDetails = table.Column<long>(type: "BIGINT", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    cd_Process = table.Column<ulong>(type: "BIGINT UNSIGNED", nullable: false),
+                    cd_Process = table.Column<long>(type: "BIGINT", nullable: false),
                     ie_LogLevel = table.Column<ushort>(type: "SMALLINT UNSIGNED", nullable: false),
                     dt_CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "NOW()"),
                     ds_Message = table.Column<string>(type: "VARCHAR(255)", maxLength: 255, nullable: false, collation: "utf8_general_ci"),

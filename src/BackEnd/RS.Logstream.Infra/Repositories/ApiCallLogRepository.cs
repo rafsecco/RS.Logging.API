@@ -21,7 +21,7 @@ public class ApiCallLogRepository : IApiCallLogRepository
 		return _context.SaveChanges() > 0;
 	}
 
-	public ApiCallLog? GetById(ulong id, string? tenantId = null)
+	public ApiCallLog? GetById(long id, string? tenantId = null)
 	{
 		IQueryable<ApiCallLog> query = _context.ApiCallLogs;
 

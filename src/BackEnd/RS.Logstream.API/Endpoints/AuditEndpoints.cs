@@ -29,7 +29,7 @@ public static class AuditEndpoints
 
 		group.MapGet("/{id}", (
 			[FromServices] ILogProcessRepository logProcessRepository,
-			ulong id,
+			long id,
 			[FromHeader(Name = "X-Tenant-Id")] string? tenantId) =>
 		{
 			var process = logProcessRepository.GetById(id, tenantId);

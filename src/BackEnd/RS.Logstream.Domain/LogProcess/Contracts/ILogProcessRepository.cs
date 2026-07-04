@@ -4,13 +4,13 @@ namespace RS.Logstream.Domain.LogProcess.Contracts;
 
 public interface ILogProcessRepository
 {
-	ulong CreateLogProcess(LogProcess logProcess);
+	long CreateLogProcess(LogProcess logProcess);
 
 	bool CreateLogProcessDetail(LogProcessDetail logProcessDetails);
 
 	IEnumerable<LogProcess> GetAll(int? page, int? pageSize, string? tenantId = null);
 
-	LogProcess? GetById(ulong id, string? tenantId = null);
+	LogProcess? GetById(long id, string? tenantId = null);
 
 	IEnumerable<LogProcess> Search(
 		DateTime? dateTimeStart,

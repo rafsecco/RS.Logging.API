@@ -24,7 +24,7 @@ public static class ApiCallLogEndpoints
 
 		group.MapGet("/{id}", (
 			[FromServices] IApiCallLogRepository repository,
-			ulong id,
+			long id,
 			[FromHeader(Name = "X-Tenant-Id")] string? tenantId) =>
 		{
 			var result = repository.GetById(id, tenantId);

@@ -26,7 +26,7 @@ public class LogRepository : ILogRepository
 		return changes > 0;
 	}
 
-	public Log? GetById(ulong id, string? tenantId = null)
+	public Log? GetById(long id, string? tenantId = null)
 	{
 		IQueryable<Log> query = _logContext.Logs;
 

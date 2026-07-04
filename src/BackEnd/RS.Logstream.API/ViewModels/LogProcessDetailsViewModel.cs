@@ -4,7 +4,7 @@ namespace RS.Logstream.API.ViewModels;
 
 public class LogProcessDetailsViewModel
 {
-	public LogProcessDetailsViewModel(ulong logProcessId, LogLevel logLevel, string message, string? stackTrace)
+	public LogProcessDetailsViewModel(long logProcessId, LogLevel logLevel, string message, string? stackTrace)
 	{
 		LogProcessId = logProcessId;
 		LogLevel = logLevel;
@@ -13,7 +13,7 @@ public class LogProcessDetailsViewModel
 	}
 
 	[Required]
-	public ulong LogProcessId { get; private set; }
+	public long LogProcessId { get; private set; }
 	[Required]
 	public LogLevel LogLevel { get; private set; }
 	[Required]

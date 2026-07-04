@@ -19,11 +19,11 @@ public class LogProcessRepository : ILogProcessRepository
 		_fullText = fullText;
 	}
 
-	public ulong CreateLogProcess(LogProcess logProcess)
+	public long CreateLogProcess(LogProcess logProcess)
 	{
 		_logProcessContext.LogProcess.Add(logProcess);
 		var changes = _logProcessContext.SaveChanges();
-		ulong lastId = logProcess.Id;
+		long lastId = logProcess.Id;
 		return lastId;
 	}
 
@@ -55,7 +55,7 @@ public class LogProcessRepository : ILogProcessRepository
 		return result;
 	}
 
-	public LogProcess? GetById(ulong id, string? tenantId = null)
+	public LogProcess? GetById(long id, string? tenantId = null)
 	{
 		IQueryable<LogProcess> query = _logProcessContext.LogProcess
 			.Include(x => x.LorProcessDetailList);

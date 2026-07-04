@@ -2,7 +2,7 @@ namespace RS.Logstream.Infra.Providers;
 
 public interface IDbColumnTypes
 {
-	string BigInt      { get; }  // "BIGINT UNSIGNED"  | "BIGINT"        | "BIGINT"
+	string BigInt      { get; }  // "BIGINT"            | "BIGINT"        | "BIGINT"
 	string SmallInt    { get; }  // "SMALLINT UNSIGNED" | "SMALLINT"      | "SMALLINT"
 	string IntUnsigned { get; }  // "INT UNSIGNED"      | "INT"           | "INT"
 	string LongText    { get; }  // "LONGTEXT"          | "NVARCHAR(MAX)" | "TEXT"

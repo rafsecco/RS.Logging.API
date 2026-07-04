@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -13,6 +13,31 @@ namespace RS.Logstream.Infra.Migrations.Postgres
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "TB_ApiCallLog",
+                columns: table => new
+                {
+                    id_ApiCallLog = table.Column<long>(type: "BIGINT", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    dt_CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    fl_IsSuccess = table.Column<bool>(type: "boolean", nullable: false),
+                    ds_HttpMethod = table.Column<string>(type: "VARCHAR", maxLength: 10, nullable: false),
+                    nr_ResponseStatusCode = table.Column<int>(type: "integer", nullable: true),
+                    nr_DurationMs = table.Column<long>(type: "bigint", nullable: true),
+                    ds_Url = table.Column<string>(type: "TEXT", nullable: false),
+                    ds_RequestBody = table.Column<string>(type: "TEXT", nullable: true),
+                    ds_RequestHeaders = table.Column<string>(type: "TEXT", nullable: true),
+                    ds_ResponseBody = table.Column<string>(type: "TEXT", nullable: true),
+                    ds_ErrorMessage = table.Column<string>(type: "TEXT", nullable: true),
+                    ds_TenantId = table.Column<string>(type: "VARCHAR", maxLength: 100, nullable: true),
+                    ds_CorrelationId = table.Column<string>(type: "VARCHAR", maxLength: 64, nullable: true),
+                    ds_TraceId = table.Column<string>(type: "VARCHAR", maxLength: 64, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TB_ApiCallLog", x => x.id_ApiCallLog);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TB_Log",
                 columns: table => new
                 {
@@ -20,11 +45,11 @@ namespace RS.Logstream.Infra.Migrations.Postgres
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ie_LogLevel = table.Column<short>(type: "SMALLINT", nullable: false),
                     dt_CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
-                    ds_Message = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    ds_Message = table.Column<string>(type: "VARCHAR", maxLength: 255, nullable: false),
                     ds_StackTrace = table.Column<string>(type: "TEXT", nullable: true),
-                    ds_TenantId = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    ds_CorrelationId = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true),
-                    ds_TraceId = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true)
+                    ds_TenantId = table.Column<string>(type: "VARCHAR", maxLength: 100, nullable: true),
+                    ds_CorrelationId = table.Column<string>(type: "VARCHAR", maxLength: 64, nullable: true),
+                    ds_TraceId = table.Column<string>(type: "VARCHAR", maxLength: 64, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -39,39 +64,14 @@ namespace RS.Logstream.Infra.Migrations.Postgres
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     id_Process = table.Column<int>(type: "INT", nullable: false),
                     dt_CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
-                    nm_Process = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    ds_TenantId = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    ds_CorrelationId = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true),
-                    ds_TraceId = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true)
+                    nm_Process = table.Column<string>(type: "VARCHAR", maxLength: 255, nullable: true),
+                    ds_TenantId = table.Column<string>(type: "VARCHAR", maxLength: 100, nullable: true),
+                    ds_CorrelationId = table.Column<string>(type: "VARCHAR", maxLength: 64, nullable: true),
+                    ds_TraceId = table.Column<string>(type: "VARCHAR", maxLength: 64, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TB_LogProcess", x => x.id_LogProcess);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TB_ApiCallLog",
-                columns: table => new
-                {
-                    id_ApiCallLog = table.Column<long>(type: "BIGINT", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    dt_CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
-                    fl_IsSuccess = table.Column<bool>(type: "boolean", nullable: false),
-                    ds_HttpMethod = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
-                    nr_ResponseStatusCode = table.Column<int>(type: "integer", nullable: true),
-                    nr_DurationMs = table.Column<long>(type: "bigint", nullable: true),
-                    ds_Url = table.Column<string>(type: "TEXT", nullable: false),
-                    ds_RequestBody = table.Column<string>(type: "TEXT", nullable: true),
-                    ds_RequestHeaders = table.Column<string>(type: "TEXT", nullable: true),
-                    ds_ResponseBody = table.Column<string>(type: "TEXT", nullable: true),
-                    ds_ErrorMessage = table.Column<string>(type: "TEXT", nullable: true),
-                    ds_TenantId = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    ds_CorrelationId = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true),
-                    ds_TraceId = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TB_ApiCallLog", x => x.id_ApiCallLog);
                 });
 
             migrationBuilder.CreateTable(
@@ -83,10 +83,10 @@ namespace RS.Logstream.Infra.Migrations.Postgres
                     cd_Process = table.Column<long>(type: "BIGINT", nullable: false),
                     ie_LogLevel = table.Column<short>(type: "SMALLINT", nullable: false),
                     dt_CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
-                    ds_Message = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    ds_Message = table.Column<string>(type: "VARCHAR", maxLength: 255, nullable: false),
                     ds_StackTrace = table.Column<string>(type: "TEXT", nullable: true),
-                    ds_CorrelationId = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true),
-                    ds_TraceId = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true)
+                    ds_CorrelationId = table.Column<string>(type: "VARCHAR", maxLength: 64, nullable: true),
+                    ds_TraceId = table.Column<string>(type: "VARCHAR", maxLength: 64, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -99,59 +99,6 @@ namespace RS.Logstream.Infra.Migrations.Postgres
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            // TB_Log indexes
-            migrationBuilder.CreateIndex(
-                name: "idx_TB_Log_ds_CorrelationId",
-                table: "TB_Log",
-                column: "ds_CorrelationId");
-
-            migrationBuilder.CreateIndex(
-                name: "idx_TB_Log_ds_TenantId",
-                table: "TB_Log",
-                column: "ds_TenantId");
-
-            migrationBuilder.CreateIndex(
-                name: "idx_TB_Log_ds_TraceId",
-                table: "TB_Log",
-                column: "ds_TraceId");
-
-            migrationBuilder.CreateIndex(
-                name: "idx_TB_Log_dt_CreatedAt",
-                table: "TB_Log",
-                column: "dt_CreatedAt");
-
-            migrationBuilder.CreateIndex(
-                name: "idx_TB_Log_dt_CreatedAt-ie_LogLevel",
-                table: "TB_Log",
-                columns: new[] { "dt_CreatedAt", "ie_LogLevel" });
-
-            // TB_LogProcess indexes
-            migrationBuilder.CreateIndex(
-                name: "IDX-TB_LogProcess_ds_CorrelationId",
-                table: "TB_LogProcess",
-                column: "ds_CorrelationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IDX-TB_LogProcess_ds_TenantId",
-                table: "TB_LogProcess",
-                column: "ds_TenantId");
-
-            migrationBuilder.CreateIndex(
-                name: "IDX-TB_LogProcess_ds_TraceId",
-                table: "TB_LogProcess",
-                column: "ds_TraceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IDX-TB_LogProcess_dt_CreatedAt",
-                table: "TB_LogProcess",
-                column: "dt_CreatedAt");
-
-            migrationBuilder.CreateIndex(
-                name: "IDX-TB_LogProcess_dt_CreatedAt-id_Process",
-                table: "TB_LogProcess",
-                columns: new[] { "dt_CreatedAt", "id_Process" });
-
-            // TB_ApiCallLog indexes
             migrationBuilder.CreateIndex(
                 name: "idx_TB_ApiCallLog_ds_CorrelationId",
                 table: "TB_ApiCallLog",
@@ -182,11 +129,60 @@ namespace RS.Logstream.Infra.Migrations.Postgres
                 table: "TB_ApiCallLog",
                 column: "nr_ResponseStatusCode");
 
-            // TB_LogProcessDetail indexes
             migrationBuilder.CreateIndex(
-                name: "IX_TB_LogProcessDetail_cd_Process",
+                name: "idx_TB_Log_ds_CorrelationId",
+                table: "TB_Log",
+                column: "ds_CorrelationId");
+
+            migrationBuilder.CreateIndex(
+                name: "idx_TB_Log_ds_TenantId",
+                table: "TB_Log",
+                column: "ds_TenantId");
+
+            migrationBuilder.CreateIndex(
+                name: "idx_TB_Log_ds_TraceId",
+                table: "TB_Log",
+                column: "ds_TraceId");
+
+            migrationBuilder.CreateIndex(
+                name: "idx_TB_Log_dt_CreatedAt",
+                table: "TB_Log",
+                column: "dt_CreatedAt");
+
+            migrationBuilder.CreateIndex(
+                name: "idx_TB_Log_dt_CreatedAt-ie_LogLevel",
+                table: "TB_Log",
+                columns: new[] { "dt_CreatedAt", "ie_LogLevel" });
+
+            migrationBuilder.CreateIndex(
+                name: "IDX-TB_LogProcess_ds_CorrelationId",
+                table: "TB_LogProcess",
+                column: "ds_CorrelationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IDX-TB_LogProcess_ds_TenantId",
+                table: "TB_LogProcess",
+                column: "ds_TenantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IDX-TB_LogProcess_ds_TraceId",
+                table: "TB_LogProcess",
+                column: "ds_TraceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IDX-TB_LogProcess_dt_CreatedAt",
+                table: "TB_LogProcess",
+                column: "dt_CreatedAt");
+
+            migrationBuilder.CreateIndex(
+                name: "IDX-TB_LogProcess_dt_CreatedAt-id_Process",
+                table: "TB_LogProcess",
+                columns: new[] { "dt_CreatedAt", "id_Process" });
+
+            migrationBuilder.CreateIndex(
+                name: "idx-TB_LogProcess_dt_CreatedAt",
                 table: "TB_LogProcessDetail",
-                column: "cd_Process");
+                column: "dt_CreatedAt");
 
             migrationBuilder.CreateIndex(
                 name: "idx-TB_LogProcessDetail_ds_CorrelationId",
@@ -204,18 +200,25 @@ namespace RS.Logstream.Infra.Migrations.Postgres
                 columns: new[] { "dt_CreatedAt", "cd_Process" });
 
             migrationBuilder.CreateIndex(
-                name: "idx-TB_LogProcess_dt_CreatedAt",
+                name: "IX_TB_LogProcessDetail_cd_Process",
                 table: "TB_LogProcessDetail",
-                column: "dt_CreatedAt");
+                column: "cd_Process");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(name: "TB_LogProcessDetail");
-            migrationBuilder.DropTable(name: "TB_LogProcess");
-            migrationBuilder.DropTable(name: "TB_Log");
-            migrationBuilder.DropTable(name: "TB_ApiCallLog");
+            migrationBuilder.DropTable(
+                name: "TB_ApiCallLog");
+
+            migrationBuilder.DropTable(
+                name: "TB_Log");
+
+            migrationBuilder.DropTable(
+                name: "TB_LogProcessDetail");
+
+            migrationBuilder.DropTable(
+                name: "TB_LogProcess");
         }
     }
 }

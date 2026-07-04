@@ -25,7 +25,7 @@ public static class LogProcessEndpoints
 
 		group.MapGet("/{id}", (
 			[FromServices] ILogProcessRepository logProcessRepository,
-			ulong id,
+			long id,
 			[FromHeader(Name = "X-Tenant-Id")] string? tenantId) =>
 		{
 			var logProcess = logProcessRepository.GetById(id, tenantId);

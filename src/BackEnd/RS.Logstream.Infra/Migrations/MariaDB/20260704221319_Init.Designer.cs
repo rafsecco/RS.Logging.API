@@ -12,7 +12,7 @@ using RS.Logstream.Infra.Contexts;
 namespace RS.Logstream.Infra.Migrations.MariaDB
 {
     [DbContext(typeof(RSLogstreamDbContext))]
-    [Migration("20260629021153_Init")]
+    [Migration("20260704221319_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -28,13 +28,13 @@ namespace RS.Logstream.Infra.Migrations.MariaDB
 
             modelBuilder.Entity("RS.Logstream.Domain.ApiCall.ApiCallLog", b =>
                 {
-                    b.Property<ulong>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("BIGINT UNSIGNED")
+                        .HasColumnType("BIGINT")
                         .HasColumnName("id_ApiCallLog")
                         .HasColumnOrder(1);
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<ulong>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("CorrelationId")
                         .HasMaxLength(64)
@@ -128,13 +128,13 @@ namespace RS.Logstream.Infra.Migrations.MariaDB
 
             modelBuilder.Entity("RS.Logstream.Domain.Log.Log", b =>
                 {
-                    b.Property<ulong>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("BIGINT UNSIGNED")
+                        .HasColumnType("BIGINT")
                         .HasColumnName("id_Log")
                         .HasColumnOrder(1);
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<ulong>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("CorrelationId")
                         .HasMaxLength(64)
@@ -201,13 +201,13 @@ namespace RS.Logstream.Infra.Migrations.MariaDB
 
             modelBuilder.Entity("RS.Logstream.Domain.LogProcess.LogProcess", b =>
                 {
-                    b.Property<ulong>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("BIGINT UNSIGNED")
+                        .HasColumnType("BIGINT")
                         .HasColumnName("id_LogProcess")
                         .HasColumnOrder(1);
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<ulong>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("CorrelationId")
                         .HasMaxLength(64)
@@ -262,13 +262,13 @@ namespace RS.Logstream.Infra.Migrations.MariaDB
 
             modelBuilder.Entity("RS.Logstream.Domain.LogProcess.LogProcessDetail", b =>
                 {
-                    b.Property<ulong>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("BIGINT UNSIGNED")
+                        .HasColumnType("BIGINT")
                         .HasColumnName("id_LogProcessDetails")
                         .HasColumnOrder(1);
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<ulong>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("CorrelationId")
                         .HasMaxLength(64)
@@ -288,8 +288,8 @@ namespace RS.Logstream.Infra.Migrations.MariaDB
                         .HasColumnName("ie_LogLevel")
                         .HasColumnOrder(3);
 
-                    b.Property<ulong>("LogProcessId")
-                        .HasColumnType("BIGINT UNSIGNED")
+                    b.Property<long>("LogProcessId")
+                        .HasColumnType("BIGINT")
                         .HasColumnName("cd_Process")
                         .HasColumnOrder(2);
 

@@ -4,7 +4,7 @@ using RS.Logstream.Domain.LogProcess;
 namespace RS.Logstream.API.ViewModels;
 
 public record AuditLogProcessDetailViewModel(
-	ulong Id,
+	long Id,
 	LogLevel LogLevel,
 	string Message,
 	string? StackTrace,
@@ -14,7 +14,7 @@ public record AuditLogProcessDetailViewModel(
 );
 
 public record AuditLogProcessViewModel(
-	ulong Id,
+	long Id,
 	uint ProcessId,
 	string? Name,
 	string? TenantId,

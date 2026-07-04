@@ -2,17 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RS.Logstream.Infra.Contexts;
 
 #nullable disable
 
-namespace RS.Logstream.Infra.Migrations.SqlServer
+namespace RS.Logstream.Infra.Migrations.Postgres
 {
     [DbContext(typeof(RSLogstreamDbContext))]
-    [Migration("20260629013905_Init")]
+    [Migration("20260704221707_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -21,9 +21,9 @@ namespace RS.Logstream.Infra.Migrations.SqlServer
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "9.0.0")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("RS.Logstream.Domain.ApiCall.ApiCallLog", b =>
                 {
@@ -33,20 +33,20 @@ namespace RS.Logstream.Infra.Migrations.SqlServer
                         .HasColumnName("id_ApiCallLog")
                         .HasColumnOrder(1);
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("CorrelationId")
                         .HasMaxLength(64)
-                        .HasColumnType("NVARCHAR")
+                        .HasColumnType("VARCHAR")
                         .HasColumnName("ds_CorrelationId")
                         .HasColumnOrder(13);
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("dt_CreatedAt")
                         .HasColumnOrder(2)
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<long?>("DurationMs")
                         .HasColumnType("bigint")
@@ -54,57 +54,57 @@ namespace RS.Logstream.Infra.Migrations.SqlServer
                         .HasColumnOrder(6);
 
                     b.Property<string>("ErrorMessage")
-                        .HasColumnType("NVARCHAR(MAX)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("ds_ErrorMessage")
                         .HasColumnOrder(11);
 
                     b.Property<string>("HttpMethod")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .HasColumnType("NVARCHAR")
+                        .HasColumnType("VARCHAR")
                         .HasColumnName("ds_HttpMethod")
                         .HasColumnOrder(4);
 
                     b.Property<bool>("IsSuccess")
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasColumnName("fl_IsSuccess")
                         .HasColumnOrder(3);
 
                     b.Property<string>("RequestBody")
-                        .HasColumnType("NVARCHAR(MAX)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("ds_RequestBody")
                         .HasColumnOrder(8);
 
                     b.Property<string>("RequestHeaders")
-                        .HasColumnType("NVARCHAR(MAX)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("ds_RequestHeaders")
                         .HasColumnOrder(9);
 
                     b.Property<string>("ResponseBody")
-                        .HasColumnType("NVARCHAR(MAX)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("ds_ResponseBody")
                         .HasColumnOrder(10);
 
                     b.Property<int?>("ResponseStatusCode")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("nr_ResponseStatusCode")
                         .HasColumnOrder(5);
 
                     b.Property<string>("TenantId")
                         .HasMaxLength(100)
-                        .HasColumnType("NVARCHAR")
+                        .HasColumnType("VARCHAR")
                         .HasColumnName("ds_TenantId")
                         .HasColumnOrder(12);
 
                     b.Property<string>("TraceId")
                         .HasMaxLength(64)
-                        .HasColumnType("NVARCHAR")
+                        .HasColumnType("VARCHAR")
                         .HasColumnName("ds_TraceId")
                         .HasColumnOrder(14);
 
                     b.Property<string>("Url")
                         .IsRequired()
-                        .HasColumnType("NVARCHAR(MAX)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("ds_Url")
                         .HasColumnOrder(7);
 
@@ -133,20 +133,20 @@ namespace RS.Logstream.Infra.Migrations.SqlServer
                         .HasColumnName("id_Log")
                         .HasColumnOrder(1);
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("CorrelationId")
                         .HasMaxLength(64)
-                        .HasColumnType("NVARCHAR")
+                        .HasColumnType("VARCHAR")
                         .HasColumnName("ds_CorrelationId")
                         .HasColumnOrder(7);
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("dt_CreatedAt")
                         .HasColumnOrder(3)
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<short>("LogLevel")
                         .HasColumnType("SMALLINT")
@@ -156,24 +156,24 @@ namespace RS.Logstream.Infra.Migrations.SqlServer
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("NVARCHAR")
+                        .HasColumnType("VARCHAR")
                         .HasColumnName("ds_Message")
                         .HasColumnOrder(4);
 
                     b.Property<string>("StackTrace")
-                        .HasColumnType("NVARCHAR(MAX)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("ds_StackTrace")
                         .HasColumnOrder(5);
 
                     b.Property<string>("TenantId")
                         .HasMaxLength(100)
-                        .HasColumnType("NVARCHAR")
+                        .HasColumnType("VARCHAR")
                         .HasColumnName("ds_TenantId")
                         .HasColumnOrder(6);
 
                     b.Property<string>("TraceId")
                         .HasMaxLength(64)
-                        .HasColumnType("NVARCHAR")
+                        .HasColumnType("VARCHAR")
                         .HasColumnName("ds_TraceId")
                         .HasColumnOrder(8);
 
@@ -200,24 +200,24 @@ namespace RS.Logstream.Infra.Migrations.SqlServer
                         .HasColumnName("id_LogProcess")
                         .HasColumnOrder(1);
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("CorrelationId")
                         .HasMaxLength(64)
-                        .HasColumnType("NVARCHAR")
+                        .HasColumnType("VARCHAR")
                         .HasColumnName("ds_CorrelationId")
                         .HasColumnOrder(6);
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("dt_CreatedAt")
                         .HasColumnOrder(3)
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
-                        .HasColumnType("NVARCHAR")
+                        .HasColumnType("VARCHAR")
                         .HasColumnName("nm_Process")
                         .HasColumnOrder(4);
 
@@ -228,13 +228,13 @@ namespace RS.Logstream.Infra.Migrations.SqlServer
 
                     b.Property<string>("TenantId")
                         .HasMaxLength(100)
-                        .HasColumnType("NVARCHAR")
+                        .HasColumnType("VARCHAR")
                         .HasColumnName("ds_TenantId")
                         .HasColumnOrder(5);
 
                     b.Property<string>("TraceId")
                         .HasMaxLength(64)
-                        .HasColumnType("NVARCHAR")
+                        .HasColumnType("VARCHAR")
                         .HasColumnName("ds_TraceId")
                         .HasColumnOrder(7);
 
@@ -261,20 +261,20 @@ namespace RS.Logstream.Infra.Migrations.SqlServer
                         .HasColumnName("id_LogProcessDetails")
                         .HasColumnOrder(1);
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("CorrelationId")
                         .HasMaxLength(64)
-                        .HasColumnType("NVARCHAR")
+                        .HasColumnType("VARCHAR")
                         .HasColumnName("ds_CorrelationId")
                         .HasColumnOrder(7);
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("dt_CreatedAt")
                         .HasColumnOrder(4)
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<short>("LogLevel")
                         .HasColumnType("SMALLINT")
@@ -289,18 +289,18 @@ namespace RS.Logstream.Infra.Migrations.SqlServer
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("NVARCHAR")
+                        .HasColumnType("VARCHAR")
                         .HasColumnName("ds_Message")
                         .HasColumnOrder(5);
 
                     b.Property<string>("StackTrace")
-                        .HasColumnType("NVARCHAR(MAX)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("ds_StackTrace")
                         .HasColumnOrder(6);
 
                     b.Property<string>("TraceId")
                         .HasMaxLength(64)
-                        .HasColumnType("NVARCHAR")
+                        .HasColumnType("VARCHAR")
                         .HasColumnName("ds_TraceId")
                         .HasColumnOrder(8);
 

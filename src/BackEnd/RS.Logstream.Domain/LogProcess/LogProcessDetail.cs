@@ -7,7 +7,7 @@ public class LogProcessDetail : BaseEntity
 {
 	#region Constructors
 	protected LogProcessDetail() { }
-	public LogProcessDetail(ulong pLogProcessId, LogLevel pLogLevel, string pMessage, string? pStackTrace = null,
+	public LogProcessDetail(long pLogProcessId, LogLevel pLogLevel, string pMessage, string? pStackTrace = null,
 		string? pCorrelationId = null, string? pTraceId = null)
 	{
 		LogProcessId = pLogProcessId;
@@ -20,7 +20,7 @@ public class LogProcessDetail : BaseEntity
 	#endregion
 
 	#region Attributes
-	public ulong LogProcessId { get; set; } // Required foreign key property
+	public long LogProcessId { get; set; } // Required foreign key property
 	public LogLevel LogLevel { get; private set; }
 	public string Message { get; private set; }
 	public string? StackTrace { get; private set; }

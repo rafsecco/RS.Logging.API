@@ -3,7 +3,7 @@ namespace RS.Logstream.Domain.ApiCall.Contracts;
 public interface IApiCallLogRepository
 {
 	bool Create(ApiCallLog apiCallLog);
-	ApiCallLog? GetById(ulong id, string? tenantId = null);
+	ApiCallLog? GetById(long id, string? tenantId = null);
 	IEnumerable<ApiCallLog> GetAll(int? page, int? pageSize, string? tenantId = null);
 	IEnumerable<ApiCallLog> Search(
 		DateTime? dateStart = null,
